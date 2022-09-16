@@ -1,12 +1,16 @@
 import React from 'react';
 import './App.css';
+import {Header} from "./components/Header";
+import {Technologies} from "./components/Technologies";
+import {Footer} from "./components/Footer";
 
-function App() {
+export const App = ()=>{
   return (
     <div className="App">
-     Hello, samurai! Let's go!
+        <Header argument={1}/>
+     <Technologies argument={1}/>
+        <Footer arguments={1}/>
     </div>
   );
 }
 
-export default App;
