@@ -1,0 +1,16 @@
+.Header{
+    display: flex;
+    width: 100vw;
+    background:cornflowerblue;
+    min-height: 150px;
+}
+
+.Header .Logo{
+    max-width: 150px;
+    height: auto;
+}
+
+.Header .Welcome{
+    margin:auto;
+    font-size: 35px;
+}

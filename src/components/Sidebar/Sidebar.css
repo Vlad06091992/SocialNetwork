@@ -1,0 +1,18 @@
+.Sidebar{
+    background: darkcyan;
+    width: 30%;
+
+}
+
+.Sidebar a{
+    display: block;
+    font-size: 24px;
+    color: inherit;
+    margin: 20px;
+    text-decoration: none;
+}
+
+.Sidebar a:last-child{
+    margin: 45px;
+}
+
