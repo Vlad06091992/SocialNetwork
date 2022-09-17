@@ -8,6 +8,7 @@ export const App = ()=>{
   return (
     <div className="App">
         <Header argument={1}/>
+        <Header argument={1}/>
         <Main argument={1}/>
         <Footer arguments={1}/>
     </div>
