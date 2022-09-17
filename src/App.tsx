@@ -9,6 +9,7 @@ export const App = ()=>{
     <div className="App">
         <Header argument={1}/>
         <Main argument={1}/>
+        <Main argument={1}/>
         <Footer arguments={1}/>
     </div>
   );
