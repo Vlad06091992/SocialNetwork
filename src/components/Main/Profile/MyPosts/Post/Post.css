@@ -1,0 +1,11 @@
+.Post{
+
+}
+
+
+
+.Post img{
+    max-width: 120px;
+    height: auto;
+    border-radius: 50%;
+}

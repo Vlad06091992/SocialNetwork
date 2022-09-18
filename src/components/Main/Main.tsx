@@ -1,18 +1,14 @@
-import React from "react";
-import "./Main.css"
-import {Sidebar} from "../Sidebar/Sidebar";
-import {Content} from "../Content/Content";
+import {Sidebar} from "./Sidebar/Sidebar";
+import {Profile} from "./Profile/Profile";
+import './Main.css';
 
 
-export const Main: React.FC<MainPropsType> = (props) => {
-    return (
+export const Main = ()=>{
+
+    return(
         <div className="Main">
-            <Sidebar argument={1}/>
-            <Content arguments={1}/>
+            <Sidebar/>
+            <Profile/>
         </div>
     )
-}
-
-type MainPropsType = {
-    argument: any
 }
