@@ -1,14 +1,12 @@
 import React from "react";
-import "./Header.css"
-type HeaderPropsType = {
-    argument:any
-}
+import classes from "./Header.module.css"
 
-export const Header:React.FC<HeaderPropsType> =(props)=>{
+
+export const Header:React.FC =(props)=>{
     return (
-        <div className="Header">
-            <img  className="Logo" src="https://cdn.worldvectorlogo.com/logos/react-2.svg"/>
-       <div className="Welcome">Welcome to my project</div>
+        <div className={classes.Header}>
+            <img  className={classes.Logo} src="https://cdn.worldvectorlogo.com/logos/react-2.svg"/>
+       <div className={classes.Welcome}>Welcome to my project</div>
         </div>
     )
 }

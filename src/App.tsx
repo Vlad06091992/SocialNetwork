@@ -10,7 +10,7 @@ import {Sidebar} from "./components/Main/Sidebar/Sidebar";
 export const App = () => {
     return (
         <div className="App">
-            <Header argument={1}/>
+            <Header/>
            <Main/>
 
         </div>

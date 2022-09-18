@@ -1,9 +1,9 @@
 import React from "react";
-import "./Sidebar.css"
+import classes from "./Sidebar.module.css"
 
 export const Sidebar:React.FC =(props)=>{
     return (
-       <div className="Sidebar">
+       <div className={classes.Sidebar}>
            <a href="src/components/Main/Sidebar/Sidebar#">Profile</a>
            <a href="src/components/Main/Sidebar/Sidebar#">Messges</a>
            <a href="src/components/Main/Sidebar/Sidebar#">News</a>

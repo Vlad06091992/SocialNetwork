@@ -1,4 +1,4 @@
-import "./MyPosts.css"
+import classes from "./MyPosts.module.css"
 import {Post} from "./Post/Post";
 
 
@@ -8,8 +8,8 @@ export const MyPosts: React.FC = (props) => {
             <div>My Posts</div>
             <textarea></textarea>
             <button>Add post</button>
-            <Post message={"First post!!!!!"}/>
-            <Post message={"Second post!!!!!!!"}/>
+            <Post likes={15} message={"First post!!!!!"}/>
+            <Post likes={20} message={"Second post!!!!!!!"}/>
         </div>
     )
 }
