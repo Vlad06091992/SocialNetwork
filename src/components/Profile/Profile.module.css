@@ -1,6 +1,7 @@
 .Profile{
+    grid-area: c;
 background: royalblue;
-    width: 70%;
+
 }
 
 .Profile img{

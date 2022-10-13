@@ -1,6 +1,7 @@
 .Sidebar{
+    grid-area: n;
     background: darkcyan;
-    width: 30%;
+
 
 }
 

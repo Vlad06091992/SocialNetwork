@@ -1,7 +1,11 @@
 
-
-.App{
-  /*text-align: center;*/
+.App {
+    display: grid;
+    grid-template-rows: 150px 1fr;
+    grid-template-columns: 2fr 10fr;
+    grid-template-areas:
+           "h h"
+           "n c";
 }
 
 /*.App-logo {
