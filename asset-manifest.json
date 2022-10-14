@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/namerepository/static/css/main.0b2454dd.css",
-    "main.js": "/namerepository/static/js/main.8a945a83.js",
-    "index.html": "/namerepository/index.html",
-    "main.0b2454dd.css.map": "/namerepository/static/css/main.0b2454dd.css.map",
-    "main.8a945a83.js.map": "/namerepository/static/js/main.8a945a83.js.map"
+    "main.css": "/SocialNetwork/static/css/main.0b2454dd.css",
+    "main.js": "/SocialNetwork/static/js/main.8a945a83.js",
+    "index.html": "/SocialNetwork/index.html",
+    "main.0b2454dd.css.map": "/SocialNetwork/static/css/main.0b2454dd.css.map",
+    "main.8a945a83.js.map": "/SocialNetwork/static/js/main.8a945a83.js.map"
   },
   "entrypoints": [
     "static/css/main.0b2454dd.css",
