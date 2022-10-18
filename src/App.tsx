@@ -7,17 +7,26 @@ import {Dialogs} from "./components/Dialogs/Dialogs";
 import {News} from "./components/News/News";
 import {Music} from "./components/Music/Music";
 import {Settings} from "./components/Settings/Settings";
-import {BrowserRouter, Route, Link} from "react-router-dom";
+import {BrowserRouter, Route} from "react-router-dom";
+import {DialogsDataType,DialogMessageType,PostDataType} from "./index";
 
-export const App = () => {
+type AppPropsData = {
+    dialogsData:Array<DialogsDataType>
+    dialogMessage:Array<DialogMessageType>
+    postData:Array<PostDataType>
+
+}
+
+export const App = (props:AppPropsData) => {
+
     return (
         <BrowserRouter>
             <div className="app">
                 <Header/>
                 <Sidebar/>
                 <div className="app-wrapper-content">
-                    <Route path="/Dialogs" component={Dialogs}/>
-                    <Route path="/Profile" component={Profile}/>
+                    <Route path="/Dialogs" render={()=><Dialogs dialogsData={props.dialogsData} dialogMessage={props.dialogMessage}/>}/>
+                    <Route path="/Profile" render={()=><Profile postData={props.postData}/>}/>
                     <Route path="/News" component={News}/>
                     <Route path="/Music" component={Music}/>
                     <Route path="/Settings" component={Settings}/>

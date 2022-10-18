@@ -1,20 +1,42 @@
 import css from "./MyPosts.module.css"
 import {Post} from "./Post/Post";
+import {PostDataType} from "../../../index";
+import {useState} from "react";
+
+type MyPostsPropsType = {
+    postData: Array<PostDataType>
+}
 
 
-export const MyPosts: React.FC = (props) => {
+export const MyPosts = (props: MyPostsPropsType) => {
+
+    const onChangeHandler = (event: any) => {
+        setTitle(event.currentTarget.value)
+    }
+    const onClickHandler = () => {
+        let newPost = {message: title, likes: 0}
+        setPosts([newPost, ...posts])
+        setTitle('')
+    }
+
+    let [posts, setPosts] = useState(props.postData)
+    let [title, setTitle] = useState('')
+
     return (
         <div className={css.MyPosts}>
             <h3>My Posts</h3>
             <div>
-                <textarea></textarea>
+                <textarea value={title} onChange={onChangeHandler}></textarea>
             </div>
             <div>
-                <button>Add post</button>
+                <button onClick={onClickHandler}>Add post</button>
             </div>
             <div className={css.posts}>
-                <Post likes={15} message={"First post!!!!!"}/>
-                <Post likes={20} message={"Second post!!!!!!!"}/>
+                {posts.map((p, i) => {
+                    return (
+                        <Post key={i} likes={p.likes} message={p.message}/>
+                    )
+                })}
             </div>
 
         </div>
