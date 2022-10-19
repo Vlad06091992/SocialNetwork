@@ -1,6 +1,6 @@
 import css from "./MyPosts.module.css"
 import {Post} from "./Post/Post";
-import {PostDataType} from "../../../index";
+import {PostDataType} from "../../../redux/state";
 import {useState} from "react";
 
 type MyPostsPropsType = {
