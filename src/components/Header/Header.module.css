@@ -7,8 +7,8 @@
 }
 
 .Header .Logo{
-    max-width: 150px;
     height: auto;
+    width: auto;
 }
 
 .Header .Welcome{

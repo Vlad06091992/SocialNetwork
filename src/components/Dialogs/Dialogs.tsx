@@ -15,10 +15,15 @@ export const Dialogs = (props:DialogsPropsType) => {
     let newMessageElement = React.createRef<HTMLInputElement>()
 
     const newMessage = () => {
-        let message = newMessageElement.current?.value
-        if(message){
+        if(newMessageElement.current){
+            let message = newMessageElement.current?.value
             props.addMessage(message)
+            newMessageElement.current.value = ''
         }
+
+
+
+
     }
 
     return (

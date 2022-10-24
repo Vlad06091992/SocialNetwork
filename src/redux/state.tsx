@@ -41,8 +41,8 @@ export type AddMessageType = (m:string)=>void
 export let state:RootStateType = {
     profilePage: {
         postData: [
-            {id:1, message: "First post!!!!", likes: 15},
-            {id:2, message: "Second post!!!!", likes: 15},
+            {id:1, message: "First post!!!!", likes: 125},
+            {id:2, message: "Second post!!!!", likes: 17},
         ]
     },
     dialogsPage: {
@@ -62,29 +62,31 @@ export let state:RootStateType = {
         ],
     },
         sidebarPage:{
-            friends : [{name:"Diman"},{name:"Diman"},{name:"Diman"},{name:"Sueta"},{name:"Max"},{name:"Kolyan"},{name:"Diman"}]
+            friends : [{name:"Diman"},{name:"Ilya"},{name:"Leha"},{name:"Sueta"},{name:"Max"},{name:"Kolyan"},{name:"Vadim"}]
         }
 
 }
 
 export const addPost = (m:string) =>{
     const getNextId = () =>{
+        if(state.profilePage.postData.length == 0) return 0
         return state.profilePage.postData[state.profilePage.postData.length - 1].id + 1
     }
     if(m){
-        let newPost:PostDataType = {id: getNextId(), message : m,likes : 0}
+        let newPost:PostDataType = {id: getNextId() || 1, message : m,likes : 0}
         state.profilePage.postData.push(newPost)
     }
-    rerenderEntireTree()
+    rerenderEntireTree(state)
 }
 
 export const addMessage = (m:string) =>{
     const getNextId = () =>{
+        if(state.dialogsPage.dialogMessage.length == 0) return 0
         return state.dialogsPage.dialogMessage[state.dialogsPage.dialogMessage.length - 1].id + 1
     }
     if(m){
         let newMessage:DialogMessageType = {id: getNextId(), message : m}
         state.dialogsPage.dialogMessage.push(newMessage)
     }
-    rerenderEntireTree()
+    rerenderEntireTree(state)
 }
