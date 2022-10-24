@@ -1,8 +1,9 @@
 
 .app {
+
     display: grid;
     grid-template-rows: 150px 1fr;
-    grid-template-columns: 2fr 10fr;
+    grid-template-columns: 3fr 12fr;
     grid-template-areas:
            "h h"
            "n c";

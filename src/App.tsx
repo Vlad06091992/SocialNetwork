@@ -8,11 +8,14 @@ import {News} from "./components/News/News";
 import {Music} from "./components/Music/Music";
 import {Settings} from "./components/Settings/Settings";
 import {BrowserRouter, Route} from "react-router-dom";
-import {RootStateType} from "./redux/state";
+import {AddMessageType, AddPostType, RootStateType} from "./redux/state";
 
 
 type AppPropsType = {
     state:RootStateType
+    addPost:AddPostType
+    addMessage:AddMessageType
+
 }
 
 
@@ -22,10 +25,10 @@ export const App = (props:AppPropsType) => {
         <BrowserRouter>
             <div className="app">
                 <Header/>
-                <Sidebar/>
+                <Sidebar sidebarData={props.state.sidebarPage}/>
                 <div className="app-wrapper-content">
-                    <Route path="/Dialogs" render={()=><Dialogs dialogsData={props.state.messagesPage.dialogsData} dialogMessage={props.state.messagesPage.dialogMessage}/>}/>
-                    <Route path="/Profile" render={()=><Profile postData={props.state.profilePage.postData}/>}/>
+                    <Route path="/Dialogs" render={()=><Dialogs addMessage={props.addMessage} dialogsData={props.state.dialogsPage.dialogsData} dialogMessage={props.state.dialogsPage.dialogMessage}/>}/>
+                    <Route path="/Profile" render={()=><Profile addPost={props.addPost} postData={props.state.profilePage.postData}/>}/>
                     <Route path="/News" component={News}/>
                     <Route path="/Music" component={Music}/>
                     <Route path="/Settings" component={Settings}/>

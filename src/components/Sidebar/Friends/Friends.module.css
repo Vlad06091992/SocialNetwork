@@ -1,0 +1,15 @@
+.friends{
+    margin-top: 30px;
+}
+
+.friendsWrapper{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.h3{
+    font-size: 24px;
+    font-weight: inherit;
+    color: black;
+    text-align: center;
+}

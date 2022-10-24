@@ -1,3 +1,5 @@
+import {rerenderEntireTree} from "../render";
+
 export type DialogsDataType = {
     name:string
     id:number
@@ -7,8 +9,9 @@ export type DialogMessageType = {
     message: string
 }
 export type PostDataType = {
-    message:any
-    likes:any
+    message:string
+    likes:number
+    id:number
 }
 export type MessagesPageType = {
     dialogsData:Array<DialogsDataType>
@@ -17,19 +20,32 @@ export type MessagesPageType = {
 export type ProfilePageType = {
     postData:Array<PostDataType>
 }
+
+export type SidebarPageType = {
+    friends:Array<FriendType>
+}
+
+export type FriendType = {
+    name:string
+}
+
 export type RootStateType = {
     profilePage:ProfilePageType
-    messagesPage:MessagesPageType
+    dialogsPage:MessagesPageType
+    sidebarPage:SidebarPageType
 }
+
+export type AddPostType = (m:string)=>void
+export type AddMessageType = (m:string)=>void
 
 export let state:RootStateType = {
     profilePage: {
         postData: [
-            {message: "First post!!!!", likes: 15},
-            {message: "Second post!!!!", likes: 15},
+            {id:1, message: "First post!!!!", likes: 15},
+            {id:2, message: "Second post!!!!", likes: 15},
         ]
     },
-    messagesPage: {
+    dialogsPage: {
         dialogsData: [
             {name: "Valera", id: 1},
             {name: "Sveta", id: 2},
@@ -45,4 +61,30 @@ export let state:RootStateType = {
             {id: 4, message: "kfslpf"}
         ],
     },
+        sidebarPage:{
+            friends : [{name:"Diman"},{name:"Diman"},{name:"Diman"},{name:"Sueta"},{name:"Max"},{name:"Kolyan"},{name:"Diman"}]
+        }
+
+}
+
+export const addPost = (m:string) =>{
+    const getNextId = () =>{
+        return state.profilePage.postData[state.profilePage.postData.length - 1].id + 1
+    }
+    if(m){
+        let newPost:PostDataType = {id: getNextId(), message : m,likes : 0}
+        state.profilePage.postData.push(newPost)
+    }
+    rerenderEntireTree()
+}
+
+export const addMessage = (m:string) =>{
+    const getNextId = () =>{
+        return state.dialogsPage.dialogMessage[state.dialogsPage.dialogMessage.length - 1].id + 1
+    }
+    if(m){
+        let newMessage:DialogMessageType = {id: getNextId(), message : m}
+        state.dialogsPage.dialogMessage.push(newMessage)
+    }
+    rerenderEntireTree()
 }
