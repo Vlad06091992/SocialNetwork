@@ -1,20 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {App} from './App';
-import {RootStateType, state, store} from "./redux/state";
+import {store} from "./redux/state";
 
-import {subscribe} from "./redux/state";
 
-export let rerenderEntireTree = (state: RootStateType) => {
+
+export let rerenderEntireTree = () => {
     ReactDOM.render(
         <App store={store}
-             state={state}/>,
+             dispatch={store.dispatch}
+             state={store._state}/>,
         document.getElementById('root')
     );
 }
 
-rerenderEntireTree(state)
-subscribe(rerenderEntireTree)
+rerenderEntireTree()
+store.subscribe(rerenderEntireTree)
 
 
 

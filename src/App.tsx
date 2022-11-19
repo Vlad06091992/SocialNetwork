@@ -8,17 +8,13 @@ import {News} from "./components/News/News";
 import {Music} from "./components/Music/Music";
 import {Settings} from "./components/Settings/Settings";
 import {BrowserRouter, Route} from "react-router-dom";
-import {
-
-    RootStateType,
-
-    StoreType
-} from "./redux/state";
+import {DispatchType, RootStateType, StoreType} from "./redux/state";
 
 
 type AppPropsType = {
     state:RootStateType
     store:StoreType
+    dispatch:DispatchType
 }
 
 
@@ -31,14 +27,12 @@ export const App = (props:AppPropsType) => {
                 <Sidebar sidebarData={props.state.sidebarPage}/>
                 <div className="app-wrapper-content">
                     <Route path="/Dialogs" render={()=><Dialogs
-                        addMessage={props.store.addMessage}
+                        dispatch={props.dispatch.bind(props.store)}
                         newMessageText={props.state.dialogsPage.newMessageText}
-                        updateNewMessageText={props.store.updateNewMessageText}
                         dialogsData={props.state.dialogsPage.dialogsData}
                         dialogMessage={props.state.dialogsPage.dialogMessage}/>}/>
                     <Route path="/Profile" render={()=><Profile
-                        addPost={props.store.addPost}
-                        updateNewPostText={props.store.updateNewPostText}
+                        dispatch={props.dispatch.bind(props.store)}
                         postData={props.state.profilePage.postData}
                         newPostText={props.state.profilePage.newPostText}/>}/>
                     <Route path="/News" component={News}/>

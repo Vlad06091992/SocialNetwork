@@ -16,7 +16,7 @@ export type PostDataType = {
 export type MessagesPageType = {
     dialogsData: Array<DialogsDataType>
     dialogMessage: Array<DialogMessageType>
-    newMessageText:string
+    newMessageText: string
 }
 export type ProfilePageType = {
     postData: Array<PostDataType>,
@@ -30,88 +30,141 @@ export type FriendType = {
 }
 export type AddMessageType = () => void
 export type AddPostType = () => void
-export type updateNewMessageTextType = (e: ChangeEvent<HTMLTextAreaElement>)=>void
-export type updateNewPostTextType = (e: ChangeEvent<HTMLTextAreaElement>)=>void
+export type updateNewMessageTextType = (e: ChangeEvent<HTMLTextAreaElement>) => void
+export type updateNewPostTextType = (e: ChangeEvent<HTMLTextAreaElement>) => void
+export type OnchangeType = ()=>void
+export type ObserverType = (observer: () => void)=>void
+export type GetStateType = ()=>RootStateType
 
+export type DispatchType = (arg:ActionsType)=>void
 export type RootStateType = {
     profilePage: ProfilePageType
     dialogsPage: MessagesPageType
     sidebarPage: SidebarPageType
 }
 export type StoreType = {
-    updateNewMessageText:updateNewMessageTextType
-    updateNewPostText:updateNewPostTextType
-    addPost:AddPostType
-    addMessage:AddMessageType
+    _state:RootStateType
+    onChange: OnchangeType
+    subscribe: ObserverType
+    getState: GetStateType
+    dispatch: DispatchType
 }
 
-let rerenderEntireTree =  (state:RootStateType) => {
-    console.log("changed")
-}
-export const subscribe = (observer:(arg:RootStateType)=>void) => {
-    rerenderEntireTree = observer
+
+export type ActionsType = AddPostActionType | addMessageActionType | UpdateNewPostTextType | UpdateNewMessageTextType
+
+type AddPostActionType = ReturnType<typeof addPostAC>
+type addMessageActionType = ReturnType<typeof addMessageAC>
+type UpdateNewMessageTextType = ReturnType<typeof updateNewMessageTextAC>
+type UpdateNewPostTextType = ReturnType<typeof updateNewPostTextAC>
+
+export const addPostAC = () => {
+    return {
+        type: "ADD-POST"
+    } as const
 }
 
-export let store:StoreType = {
-    updateNewMessageText(e: ChangeEvent<HTMLTextAreaElement>){
-        state.dialogsPage.newMessageText = e.currentTarget.value
-        rerenderEntireTree(state)
-    },
-    updateNewPostText(e: ChangeEvent<HTMLTextAreaElement>){
-        state.profilePage.newPostText = e.currentTarget.value
-        rerenderEntireTree(state)
-    }
-    ,addPost (){
-        const getNextId = () => {
-            if (state.profilePage.postData.length == 0) return 0
-            return state.profilePage.postData[state.profilePage.postData.length - 1].id + 1
+export const addMessageAC = () => {
+    return {
+        type: "ADD-MESSAGE"
+    } as const
+}
+
+export const updateNewMessageTextAC = (text: string | undefined) => {
+    return{
+        type: "UPDATE-NEW-MESSAGE-TEXT",
+        text:text
+    } as const
+}
+
+export const updateNewPostTextAC = (text:string) => {
+    return{
+        type: "UPDATE-NEW-POST-TEXT",
+        text:text
+    } as const
+}
+
+
+
+export let store: StoreType = {
+    _state: {
+        profilePage: {
+            postData: [
+                {id: 1, message: "First post!!!!", likes: 125},
+                {id: 2, message: "Second post!!!!", likes: 17},
+            ],
+            newPostText: "",
+        },
+        dialogsPage: {
+            dialogsData: [
+                {name: "Valera", id: 1},
+                {name: "Sveta", id: 2},
+                {name: "Max", id: 3},
+                {name: "Kolyan", id: 4},
+                {name: "Sueta", id: 5},
+                {name: "Valera", id: 6},
+            ],
+            dialogMessage: [
+                {id: 1, message: "Hello"},
+                {id: 2, message: "How are you"},
+                {id: 3, message: "Kak dela ?"},
+
+            ],
+            newMessageText: ""
+        },
+        sidebarPage: {
+            friends: [{name: "Diman"}, {name: "Ilya"}, {name: "Leha"}, {name: "Sueta"}, {name: "Max"}, {name: "Kolyan"}, {name: "Vadim"}]
         }
-        let newPost: PostDataType = {id: getNextId() || 1, message: state.profilePage.newPostText, likes: 0}
-        state.profilePage.postData.push(newPost)
-        state.profilePage.newPostText = ''
-        rerenderEntireTree(state)
+
     },
-    addMessage(){
-        const getNextId = () => {
-            if (state.dialogsPage.dialogMessage.length == 0) return 0
-            return state.dialogsPage.dialogMessage[state.dialogsPage.dialogMessage.length - 1].id + 1
+    getState(){
+        return this._state
+    },
+    dispatch(action:ActionsType) {
+        switch (action.type) {
+            case ("UPDATE-NEW-MESSAGE-TEXT"):
+                this._state.dialogsPage.newMessageText = action.text as string
+                this.onChange()
+                break
+            case ("UPDATE-NEW-POST-TEXT"):
+                this._state.profilePage.newPostText = action.text
+                this.onChange()
+                break
+            case ("ADD-POST"): {
+                const getNextId = () => {
+                    if (this._state.profilePage.postData.length == 0) return 0
+                    return this._state.profilePage.postData[this._state.profilePage.postData.length - 1].id + 1
+                }
+                let newPost: PostDataType = {
+                    id: getNextId() || 1,
+                    message: this._state.profilePage.newPostText,
+                    likes: 0
+                }
+                this._state.profilePage.postData.push(newPost)
+                this._state.profilePage.newPostText = ''
+                this.onChange()
+            }
+                break
+            case ("ADD-MESSAGE"): {
+                const getNextId = () => {
+                    if (this._state.dialogsPage.dialogMessage.length == 0) return 0
+                    return this._state.dialogsPage.dialogMessage[this._state.dialogsPage.dialogMessage.length - 1].id + 1
+                }
+
+                let newMessage: DialogMessageType = {id: getNextId(), message: this._state.dialogsPage.newMessageText}
+                this._state.dialogsPage.dialogMessage.push(newMessage)
+                this._state.dialogsPage.newMessageText = ''
+                this.onChange()
+                break
+            }
         }
-
-        let newMessage: DialogMessageType = {id: getNextId(), message: state.dialogsPage.newMessageText}
-        state.dialogsPage.dialogMessage.push(newMessage)
-        state.dialogsPage.newMessageText = ''
-        rerenderEntireTree(state)
-    }
-}
-export let state: RootStateType = {
-    profilePage: {
-        postData: [
-            {id: 1, message: "First post!!!!", likes: 125},
-            {id: 2, message: "Second post!!!!", likes: 17},
-        ],
-        newPostText: "",
     },
-    dialogsPage: {
-        dialogsData: [
-            {name: "Valera", id: 1},
-            {name: "Sveta", id: 2},
-            {name: "Max", id: 3},
-            {name: "Kolyan", id: 4},
-            {name: "Sueta", id: 5},
-            {name: "Valera", id: 6},
-        ],
-        dialogMessage: [
-            {id: 1, message: "Hello"},
-            {id: 2, message: "How are you"},
-            {id: 3, message: "Kak dela ?"},
-            {id: 4, message: "kfslpf"}
-        ],
-        newMessageText:""
+    onChange (){
+        console.log("changed")
     },
-    sidebarPage: {
-        friends: [{name: "Diman"}, {name: "Ilya"}, {name: "Leha"}, {name: "Sueta"}, {name: "Max"}, {name: "Kolyan"}, {name: "Vadim"}]
+    subscribe(callback: () => void){
+        this.onChange = callback
     }
-
 }
 
 
