@@ -8,9 +8,21 @@
 .Header .Logo{
     height: auto;
     width: auto;
+    animation: rotation 4s infinite linear;
 }
 
 .Header .Welcome{
     margin:auto;
     font-size: 35px;
 }
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+}
+
+

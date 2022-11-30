@@ -23,31 +23,37 @@ type DialogsPropsType = {
 
 export const Dialogs = (props: DialogsPropsType) => {
 
-    let newMessageElement = React.createRef<HTMLTextAreaElement>()
+
     const newMessage = () => {
         props.dispatch(addMessageAC())
     }
-
-    const updateNewMessageText = () => {
-        let text = newMessageElement.current?.value
+    const updateNewMessageText = (e:any) => {
+        let text = e.currentTarget.value
         props.dispatch(updateNewMessageTextAC(text))
     }
+
+    const dialogsElements = props.dialogsData.map((d, i) => <DialogItem key={i} id={d.id} name={d.name}/>)
+
+
+    const messageElements = () => props.dialogMessage.map((d, i) => <Message key={i} message={d.message}/>)
+
 
 
     return (
 
         <div className={css.dialogs}>
             <div className={css.dialogsItems}>
-                {props.dialogsData.map((d, i) => <DialogItem key={i} id={d.id} name={d.name}/>)}
+                {dialogsElements}
             </div>
             <div className={css.messages}>
                 <div>
-                    {props.dialogMessage.map((d, i) => <Message key={i} message={d.message}/>)}
+                    {messageElements()}
+
                 </div>
                 <div className={css.inputButton}>
 
-                    <textarea onChange={updateNewMessageText}
-                              ref={newMessageElement}
+                    <textarea placeholder={"Send message"}
+                              onChange={updateNewMessageText}
                               className={css.input}
                               value={props.newMessageText}
                     />

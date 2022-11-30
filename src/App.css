@@ -1,4 +1,8 @@
 
+body{
+  margin: 0;
+}
+
 .app {
 
     overflow-x:hidden;

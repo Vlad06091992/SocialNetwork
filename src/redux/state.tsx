@@ -1,4 +1,7 @@
 import {ChangeEvent} from "react";
+import {sidebarReducer} from "./sidebar-reducer";
+import {profileReducer} from "./profile-reducer";
+import {dialogsReducer} from "./dialogs-reducer";
 
 export type DialogsDataType = {
     name: string
@@ -63,20 +66,17 @@ export const addPostAC = () => {
         type: "ADD-POST"
     } as const
 }
-
 export const addMessageAC = () => {
     return {
         type: "ADD-MESSAGE"
     } as const
 }
-
 export const updateNewMessageTextAC = (text: string | undefined) => {
     return{
         type: "UPDATE-NEW-MESSAGE-TEXT",
         text:text
     } as const
 }
-
 export const updateNewPostTextAC = (text:string) => {
     return{
         type: "UPDATE-NEW-POST-TEXT",
@@ -117,47 +117,16 @@ export let store: StoreType = {
         }
 
     },
+
     getState(){
         return this._state
     },
     dispatch(action:ActionsType) {
-        switch (action.type) {
-            case ("UPDATE-NEW-MESSAGE-TEXT"):
-                this._state.dialogsPage.newMessageText = action.text as string
-                this.onChange()
-                break
-            case ("UPDATE-NEW-POST-TEXT"):
-                this._state.profilePage.newPostText = action.text
-                this.onChange()
-                break
-            case ("ADD-POST"): {
-                const getNextId = () => {
-                    if (this._state.profilePage.postData.length == 0) return 0
-                    return this._state.profilePage.postData[this._state.profilePage.postData.length - 1].id + 1
-                }
-                let newPost: PostDataType = {
-                    id: getNextId() || 1,
-                    message: this._state.profilePage.newPostText,
-                    likes: 0
-                }
-                this._state.profilePage.postData.push(newPost)
-                this._state.profilePage.newPostText = ''
-                this.onChange()
-            }
-                break
-            case ("ADD-MESSAGE"): {
-                const getNextId = () => {
-                    if (this._state.dialogsPage.dialogMessage.length == 0) return 0
-                    return this._state.dialogsPage.dialogMessage[this._state.dialogsPage.dialogMessage.length - 1].id + 1
-                }
+        this._state.profilePage = profileReducer(this._state.profilePage,action)
+        this._state.dialogsPage = dialogsReducer(this._state.dialogsPage,action)
+        this._state.sidebarPage = sidebarReducer(this._state.sidebarPage,action)
 
-                let newMessage: DialogMessageType = {id: getNextId(), message: this._state.dialogsPage.newMessageText}
-                this._state.dialogsPage.dialogMessage.push(newMessage)
-                this._state.dialogsPage.newMessageText = ''
-                this.onChange()
-                break
-            }
-        }
+        this.onChange()
     },
     onChange (){
         console.log("changed")

@@ -13,7 +13,7 @@ export type SidebarPropsType = {
 
 export const Sidebar: React.FC<SidebarPropsType> = (props) => {
 
-    const active = (isActive:boolean) => isActive ? classes.active : classes.item
+    const active = (isActive:boolean) => isActive ? `${classes.active} ${classes.item}`: classes.item
 
     return (
 
