@@ -2,7 +2,7 @@ import React from "react";
 import {Friend} from "./Friend/Friend";
 import css from "./Friends.module.css";
 import exp from "constants";
-import {FriendType} from "../../../redux/state";
+import {FriendType} from "../../../redux/store";
 export type FriendsType = {
     friends:Array<FriendType>
 }

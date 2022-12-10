@@ -3,7 +3,7 @@ import {sidebarReducer} from "./sidebar-reducer";
 import {profileReducer} from "./profile-reducer";
 import {dialogsReducer} from "./dialogs-reducer";
 
-export type DialogsDataType = {
+export type DialogDataType = {
     name: string
     id: number
 }
@@ -17,7 +17,7 @@ export type PostDataType = {
     id: number
 }
 export type MessagesPageType = {
-    dialogsData: Array<DialogsDataType>
+    dialogsData: Array<DialogDataType>
     dialogMessage: Array<DialogMessageType>
     newMessageText: string
 }
@@ -52,6 +52,8 @@ export type StoreType = {
     getState: GetStateType
     dispatch: DispatchType
 }
+
+
 
 
 export type ActionsType = AddPostActionType | addMessageActionType | UpdateNewPostTextType | UpdateNewMessageTextType

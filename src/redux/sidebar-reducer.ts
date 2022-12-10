@@ -1,5 +1,10 @@
-import {ActionsType, SidebarPageType} from "./state";
+import {ActionsType, SidebarPageType} from "./store";
 
-export const sidebarReducer = (state:SidebarPageType,action:ActionsType) => {
-    return state
+let initialState:SidebarPageType = {
+    friends: [{name: "Diman"}, {name: "Ilya"}, {name: "Leha"}, {name: "Sueta"}, {name: "Max"}, {name: "Kolyan"}, {name: "Vadim"}]
+
+}
+
+export const sidebarReducer = (state:SidebarPageType = initialState,action:ActionsType) => {
+   return state
 }

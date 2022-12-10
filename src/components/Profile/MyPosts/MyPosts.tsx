@@ -1,49 +1,43 @@
 import css from "./MyPosts.module.css"
 import {Post} from "./Post/Post";
-import {AddPostType, DispatchType, PostDataType, updateNewPostTextType} from "../../../redux/state";
+import {AddPostType, DispatchType, PostDataType, updateNewPostTextType} from "../../../redux/store";
 import React, {ChangeEvent, useState} from "react";
-import {addPostAC} from "../../../redux/state";
-import {updateNewPostTextAC} from "../../../redux/state";
+import {addPostAC} from "../../../redux/store";
+import {updateNewPostTextAC} from "../../../redux/store";
 
 type MyPostsPropsType = {
-    dispatch: DispatchType
-    postData: Array<PostDataType>
-    newPostText: string
-
+    posts: Array<PostDataType>
+    onPostChange: (text: string | undefined) => void
+    addPost: () => void
+    newPostText:string
 }
 
 
 export const MyPosts = (props: MyPostsPropsType) => {
+
     let newPostElement = React.createRef<HTMLTextAreaElement>()
 
-    const newPost = () => {
-        if (newPostElement.current) {
-            props.dispatch(addPostAC())
-        }
+    const onAddPost = () => {
+        props.addPost()
     }
 
-    const onPostChange = () => {
-        let text = newPostElement.current?.value
-        if(text){
-            props.dispatch(updateNewPostTextAC(text))
-
-        }
+    const onPostChange = () =>{
+        props.onPostChange(newPostElement.current?.value)
     }
-
 
     return (
         <div className={css.MyPosts}>
             <h3>My Posts</h3>
             <div>
-                <textarea onChange={onPostChange}
-                          ref={newPostElement}
-                          value={props.newPostText}></textarea>
+                <textarea ref={newPostElement}
+                          onChange={onPostChange}
+                value={props.newPostText}></textarea>
             </div>
             <div>
-                <button onClick={newPost}>Add post</button>
+                <button onClick={onAddPost}>Add post</button>
             </div>
             <div className={css.posts}>
-                {props.postData.map((p, i) => {
+                {props.posts.map((p, i) => {
                     return (
                         <Post key={i} likes={p.likes} message={p.message}/>
                     )
@@ -53,3 +47,4 @@ export const MyPosts = (props: MyPostsPropsType) => {
         </div>
     )
 }
+

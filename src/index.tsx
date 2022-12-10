@@ -1,15 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {App} from './App';
-import {store} from "./redux/state";
-
+import {store} from "./redux/redux-store";
+import {StoreContext} from "./StoreContext";
 
 
 export let rerenderEntireTree = () => {
     ReactDOM.render(
+<StoreContext.Provider value={store}>
         <App store={store}
              dispatch={store.dispatch}
-             state={store._state}/>,
+             state={store.getState()}/>
+</StoreContext.Provider> ,
         document.getElementById('root')
     );
 }
