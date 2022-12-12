@@ -1,11 +1,8 @@
 import React from "react";
 import classes from "./Sidebar.module.css"
 import {NavLink} from "react-router-dom";
-import {Router} from "react-router-dom";
-import {Route} from "react-router-dom";
-import {BrowserRouter} from "react-router-dom";
 import {Friends} from "./Friends/Friends";
-import {FriendType, SidebarPageType} from "../../redux/store";
+import {SidebarPageType} from "../../redux/store";
 
 export type SidebarPropsType = {
     sidebarData:SidebarPageType
@@ -23,6 +20,7 @@ export const Sidebar: React.FC<SidebarPropsType> = (props) => {
             <NavLink className={active} to="/News">News</NavLink>
             <NavLink className={active} to="/Music">Music</NavLink>
             <NavLink className={active} to="/Settings">Settings</NavLink>
+            <NavLink className={active} to="/Users">Users</NavLink>
             <Friends friends={props.sidebarData.friends}/>
         </div>
 

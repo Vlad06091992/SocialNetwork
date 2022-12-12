@@ -1,46 +1,28 @@
-import React, {ChangeEvent} from "react";
-import css from "./Dialogs.module.css"
-import {DialogItem} from "./Dialog/Dialog";
-import {Message} from "./Message/Message";
-import {
-    AddMessageType,
-    DialogMessageType,
-    DialogDataType,
-    DispatchType,
-    updateNewMessageTextType
+import React from "react";
+import {DispatchType, RootStateType
 } from "../../redux/store";
 
 
 import {addMessageAC} from "../../redux/store";
 import {updateNewMessageTextAC} from "../../redux/store";
-import {ReduxStoreType} from "../../redux/redux-store";
 import {Dialogs} from "./Dilaogs";
+import {connect} from "react-redux";
 
-type DialogsPropsType = {
-    store: ReduxStoreType
-}
-
-export const DialogsContainer = (props: DialogsPropsType) => {
-
-    let state = props.store.getState()
-
-    const sendMessage = () => {
-        props.store.dispatch(addMessageAC())
-    }
-    const updateNewMessageText = (text: string) => {
-        props.store.dispatch(updateNewMessageTextAC(text))
+let mapStateToProps = (state: RootStateType) => {
+    return {
+        dialogsPage: state.dialogsPage,
+        textAreaValue: state.dialogsPage.newMessageText
     }
 
-
-    const textAreaValue = props.store.getState().dialogsPage.newMessageText
-
-
-    return (
-        <Dialogs dialogsPage={state.dialogsPage}
-                 updateNewMessageText={updateNewMessageText}
-                 textAreaValue={textAreaValue}
-                 sendMessage={sendMessage}
-        />
-
-    )
 }
+
+let mapDispatchToProps = (dispatch: DispatchType) => {
+    return{
+        sendMessage:()=>dispatch(addMessageAC()),
+        updateNewMessageText:(text: string) => dispatch(updateNewMessageTextAC(text))
+//     }
+    }
+
+}
+
+export const DialogsContainer = connect(mapStateToProps,mapDispatchToProps)(Dialogs)

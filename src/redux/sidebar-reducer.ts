@@ -6,5 +6,5 @@ let initialState:SidebarPageType = {
 }
 
 export const sidebarReducer = (state:SidebarPageType = initialState,action:ActionsType) => {
-   return state
+   return {...state}
 }
