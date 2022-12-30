@@ -1,38 +1,12 @@
 import {ActionsType, UsersPageType} from "./store";
 
-let initialState: UsersPageType = {
-    users: [
-        {
-            id: 2, photo: 'https://i.pinimg.com/736x/2e/2e/21/2e2e2125ee53807c2d77b34773f84b5c.jpg',
-            followed: false,
-            fullname: 'Sueta',
-            status: 'i am boss',
-            location: {city: 'Moscow', country: 'Russia'}
-        },
-        {
-            id: 3, photo: 'https://i.pinimg.com/736x/2e/2e/21/2e2e2125ee53807c2d77b34773f84b5c.jpg',
-            followed: true,
-            fullname: 'Dmitriy',
-            status: 'i am boss',
-            location: {city: 'Moscow', country: 'Russia'}
-        },
-        {
-            id: 4, photo: 'https://i.pinimg.com/736x/2e/2e/21/2e2e2125ee53807c2d77b34773f84b5c.jpg',
-            followed: true,
-            fullname: 'Max',
-            status: 'i am boss',
-            location: {city: 'Moscow', country: 'Russia'}
-        },
-        {
-            id: 5, photo: 'https://i.pinimg.com/736x/2e/2e/21/2e2e2125ee53807c2d77b34773f84b5c.jpg',
-            followed: false,
-            fullname: 'Kolyan',
-            status: 'i am boss',
-            location: {city: 'Moscow', country: 'Russia'}
-        }
-    ]
-}
+let initialState = {
+ users:   [],
+    totalCount:0,
+    pageSize:100,
+    currentPage:1
 
+}
 export const userReducer = (state: UsersPageType = initialState, action: ActionsType):UsersPageType => {
     switch (action.type) {
         case("FOLLOW-USER"): {
@@ -44,7 +18,14 @@ export const userReducer = (state: UsersPageType = initialState, action: Actions
         }
 
         case ("SET-USERS"): {
-            return {...state , users:[...state.users, ...action.users]}
+            return {...state , users:[...action.users]}
+        }
+        case ("SET-TOTAL-COUNT"): {
+            return {...state , totalCount:(action.totalCount)}
+        }
+
+        case ("SET-CURRENT-PAGE"): {
+            return {...state , currentPage:(action.currentPage)}
         }
 
         default:

@@ -26,3 +26,11 @@
 .button{
     margin-top: 3px;
 }
+
+.bold{
+    font-weight: bold;
+}
+
+span{
+    cursor: pointer;
+}

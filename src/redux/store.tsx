@@ -45,14 +45,23 @@ export type RootStateType = {
 
 export type UsersPageType = {
     users: UserType[]
+    totalCount:number
+    pageSize:number
+    currentPage:number
+
 }
 export type UserType = {
-    id: number,
-    followed: boolean
-    photo: string,
-    fullname: string
-    status: string
-    location: LocationType
+
+    "name": string,
+    "id": number,
+    "uniqueUrlName": string | null,
+    "photos": {
+    "small": string |null,
+        "large": string |null
+},
+    "status": string |null,
+    "followed": boolean
+
 }
 
 export type LocationType = {
@@ -61,8 +70,9 @@ export type LocationType = {
 }
 
 
-export type ActionsType = SetUsersAC | FollowUserActionType| UnFollowUserActionType | AddPostActionType | addMessageActionType | UpdateNewPostTextType | UpdateNewMessageTextType
-
+export type ActionsType = SetCurrentPageAC |SetTotalCountAC | SetUsersAC | FollowUserActionType| UnFollowUserActionType | AddPostActionType | addMessageActionType | UpdateNewPostTextType | UpdateNewMessageTextType
+type SetCurrentPageAC = ReturnType<typeof setCurrentPageAC>
+type SetTotalCountAC = ReturnType<typeof setTotalcountAC>
 type SetUsersAC = ReturnType<typeof setUsersAC>
 type FollowUserActionType = ReturnType<typeof followUserAC>
 type UnFollowUserActionType = ReturnType<typeof unFollowUserAC>
@@ -71,12 +81,27 @@ type addMessageActionType = ReturnType<typeof addMessageAC>
 type UpdateNewMessageTextType = ReturnType<typeof updateNewMessageTextAC>
 type UpdateNewPostTextType = ReturnType<typeof updateNewPostTextAC>
 
+export const setCurrentPageAC = (currentPage:number) => {
+    return {
+        type: 'SET-CURRENT-PAGE',
+        currentPage
+    } as const
+}
+
 export const setUsersAC = (users:UserType[]) => {
     return {
         type: 'SET-USERS',
         users:users
     } as const
 }
+
+export const setTotalcountAC = (totalCount:number) => {
+    return {
+        type: 'SET-TOTAL-COUNT',
+        totalCount,
+    } as const
+}
+
 
 export const followUserAC = (UserId: number) => {
     return {
