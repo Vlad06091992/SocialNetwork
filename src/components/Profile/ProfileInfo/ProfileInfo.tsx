@@ -1,15 +1,24 @@
 import React from "react";
 import css from "./ProfileInfo.module.css";
+import {PresentationProfileType} from "../../../redux/store";
 
-type ProfileInfoType = {
-    description:string
-}
+// type ProfileInfoType = {
+//     description:string
+// }
 
-export const ProfileInfo:React.FC<ProfileInfoType> = (props) => {
+export const ProfileInfo:React.FC<PresentationProfileType> = (props) => {
     return(
         <div className={css.ProfileInfo}>
-            <img src="https://i0.wp.com/engineswapdepot.com/wp-content/uploads/2021/06/BMW-130i-with-a-S65-V8-01.jpg?resize=930%2C620&ssl=1"/>
-            <div className={css.description}>{props.description}</div>
+            <img src={props.photos.large}/>
+            <div className={css.description}>this props</div>
+        <p>{props.aboutMe}</p>
+        <p>{props.userId}</p>
+        <p>{props.fullName}</p>
+        <a href={props.contacts.vk}>My vk</a>
+        <a href={props.contacts.twitter}>My twitter</a>
+        <p>{props.lookingForAJobDescription}</p>
+        <p>{props.lookingForAJob}</p>
+
         </div>
     )
 

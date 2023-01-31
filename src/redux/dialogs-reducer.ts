@@ -21,8 +21,7 @@ let initialState: MessagesPageType = {
 export const dialogsReducer = (state: MessagesPageType = initialState, action: ActionsType) => {
     switch (action.type) {
         case ("UPDATE-NEW-MESSAGE-TEXT"):
-            // state.newMessageText = action.text as string
-            return {...state}
+            return {...state, newMessageText: action.text}
         case ("ADD-MESSAGE"): {
             const getNextId = () => {
                 if (state.dialogMessage.length === 0) return 0
@@ -30,7 +29,7 @@ export const dialogsReducer = (state: MessagesPageType = initialState, action: A
             }
             let newMessage: DialogMessageType = {id: getNextId(), message: state.newMessageText}
             state.newMessageText = ''
-            return {...state, newMessageText: "", dialogMessage:[...state.dialogMessage,newMessage]}
+            return {...state, newMessageText: "", dialogMessage: [...state.dialogMessage, newMessage]}
         }
         default:
             return state

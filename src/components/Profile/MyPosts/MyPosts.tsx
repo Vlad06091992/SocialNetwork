@@ -2,14 +2,15 @@ import css from "./MyPosts.module.css"
 import {Post} from "./Post/Post";
 import {AddPostType, DispatchType, PostDataType, updateNewPostTextType} from "../../../redux/store";
 import React, {ChangeEvent, useState} from "react";
-import {addPostAC} from "../../../redux/store";
-import {updateNewPostTextAC} from "../../../redux/store";
+import {addPost} from "../../../redux/store";
+import {updateNewPostText} from "../../../redux/store";
 
 type MyPostsPropsType = {
     posts: Array<PostDataType>
-    onPostChange: (text: string | undefined) => void
+    updateNewPostText: (text: string | undefined) => void
     addPost: () => void
-    newPostText:string
+    newPostText: string
+
 }
 
 
@@ -22,7 +23,7 @@ export const MyPosts = (props: MyPostsPropsType) => {
     }
 
     const onPostChange = () =>{
-        props.onPostChange(newPostElement.current?.value)
+        props.updateNewPostText(newPostElement.current?.value)
     }
 
     return (

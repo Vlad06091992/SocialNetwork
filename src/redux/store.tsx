@@ -1,7 +1,5 @@
 import {ChangeEvent} from "react";
-import {sidebarReducer} from "./sidebar-reducer";
-import {profileReducer} from "./profile-reducer";
-import {dialogsReducer} from "./dialogs-reducer";
+import {AuthStateType} from "./auth-reducer";
 
 export type DialogDataType = {
     name: string
@@ -21,10 +19,65 @@ export type MessagesPageType = {
     dialogMessage: Array<DialogMessageType>
     newMessageText: string
 }
-export type ProfilePageType = {
+
+export type ProfileContainerType = ProfileType & {
+    setAboutMe: (text: string) => void,
+    setContacts: (contacts: { vk: string, twitter: string }) => void,
+    setFullName: (text: string) => void
+    setLookingForAJob: (status: boolean) => void
+    setLookingForAJobDescription: (text: string) => void
+    setPhotos: (photos: { small: string, large: string }) => void
+    setUserId: (userId: number) => void
+    match: any
+}
+
+export type ProfileType = {
+    aboutMe: string,
+    contacts: { vk: string, twitter: string }
+    fullName: string
+    lookingForAJob: boolean
+    lookingForAJobDescription?: string
+    photos: {
+        small: string
+        large: string
+    }
+    userId: number,
+}
+
+
+export type ProfilePageType = ProfileType & {
     postData: Array<PostDataType>,
     newPostText: string
 }
+
+export type ProfileInfoPropsType = {
+    aboutMe: string,
+    contacts: { vk: string, twitter: string }
+    fullName: string
+    lookingForAJob: boolean
+    lookingForAJobDescription?: string
+    photos: {
+        small: string
+        large: string
+    }
+    userId: number,
+}
+
+
+export type PresentationProfileType = {
+    aboutMe: string,
+    contacts: { vk: string, twitter: string }
+    fullName: string
+    lookingForAJob: boolean
+    lookingForAJobDescription?: string
+    photos: {
+        small: string
+        large: string
+    }
+    userId: number,
+}
+
+
 export type SidebarPageType = {
     friends: Array<FriendType>
 }
@@ -34,109 +87,219 @@ export type FriendType = {
 export type AddPostType = () => void
 export type updateNewPostTextType = (e: ChangeEvent<HTMLTextAreaElement>) => void
 export type DispatchType = (arg: ActionsType) => void
-
 export type RootStateType = {
     profilePage: ProfilePageType
     dialogsPage: MessagesPageType
     sidebarPage: SidebarPageType
     usersPage: UsersPageType
+    auth: AuthStateType
 }
-//
-
 export type UsersPageType = {
     users: UserType[]
-    totalCount:number
-    pageSize:number
-    currentPage:number
+    totalUserCount: number
+    pageSize: number
+    currentPage: number
+    isFetching: boolean
+    followingInProgress: Array<number>
+
 
 }
 export type UserType = {
-
     "name": string,
     "id": number,
     "uniqueUrlName": string | null,
     "photos": {
-    "small": string |null,
-        "large": string |null
-},
-    "status": string |null,
+        "small": string | null,
+        "large": string | null
+    },
+    "status": string | null,
     "followed": boolean
 
 }
-
 export type LocationType = {
     city: string
     country: string
 }
 
 
-export type ActionsType = SetCurrentPageAC |SetTotalCountAC | SetUsersAC | FollowUserActionType| UnFollowUserActionType | AddPostActionType | addMessageActionType | UpdateNewPostTextType | UpdateNewMessageTextType
-type SetCurrentPageAC = ReturnType<typeof setCurrentPageAC>
-type SetTotalCountAC = ReturnType<typeof setTotalcountAC>
-type SetUsersAC = ReturnType<typeof setUsersAC>
-type FollowUserActionType = ReturnType<typeof followUserAC>
-type UnFollowUserActionType = ReturnType<typeof unFollowUserAC>
-type AddPostActionType = ReturnType<typeof addPostAC>
-type addMessageActionType = ReturnType<typeof addMessageAC>
-type UpdateNewMessageTextType = ReturnType<typeof updateNewMessageTextAC>
-type UpdateNewPostTextType = ReturnType<typeof updateNewPostTextAC>
+type ForUsersReducerTypes =
+    SetIsFetchingAC
+    | SetCurrentPageAC
+    | SetTotalUserCountAC
+    | SetUsersAC
+    | FollowUserActionType
+    | UnFollowUserActionType
+    | SetFollowingProgress
+    | RemoveFollowingProgress
 
-export const setCurrentPageAC = (currentPage:number) => {
+type ForDialogsReducerTypes = UpdateNewPostTextType | UpdateNewMessageTextType
+type ForProfilieReducerType =
+    AddPostActionType
+    | AddMessageActionType
+    | SetAboutMeAC
+    | SetContactsAC
+    | SetFullNameAC
+    | SetLookingForAJobAC
+    | SetLookingForAJobACDescription
+    | SetPhotosAC
+    | SetUserId
+
+export type ActionsType = ForUsersReducerTypes | ForDialogsReducerTypes | ForProfilieReducerType | AuthUser
+
+
+/* For Users reducer */
+type RemoveFollowingProgress = ReturnType<typeof removeFollowingProgress>
+type SetFollowingProgress = ReturnType<typeof setFollowingProgress>
+type SetIsFetchingAC = ReturnType<typeof setFetching>
+type SetCurrentPageAC = ReturnType<typeof setCurrentPage>
+type SetUsersAC = ReturnType<typeof setUsers>
+type SetTotalUserCountAC = ReturnType<typeof setTotalUserCount>
+type FollowUserActionType = ReturnType<typeof follow>
+type UnFollowUserActionType = ReturnType<typeof unFollow>
+
+/* For Dialogs reducer */
+type UpdateNewMessageTextType = ReturnType<typeof updateNewMessageText>
+type UpdateNewPostTextType = ReturnType<typeof updateNewPostText>
+
+/* For Profile reducer */
+type AddPostActionType = ReturnType<typeof addPost>
+type AddMessageActionType = ReturnType<typeof addMessage>
+type SetAboutMeAC = ReturnType<typeof setAboutMe>
+type SetContactsAC = ReturnType<typeof setContacts>
+type SetFullNameAC = ReturnType<typeof setFullName>
+type SetLookingForAJobACDescription = ReturnType<typeof setLookingForAJobDescription>
+type SetLookingForAJobAC = ReturnType<typeof setLookingForAJob>
+type SetPhotosAC = ReturnType<typeof setPhotos>
+type SetUserId = ReturnType<typeof setUserId>
+
+type AuthUser = ReturnType<typeof authUser>
+
+/* For Users reducer */
+export const setFetching = (isFetching: boolean) => {
+    return {
+        type: 'TOGGLE-FETCHING',
+        isFetching
+    } as const
+}
+export const setCurrentPage = (currentPage: number) => {
     return {
         type: 'SET-CURRENT-PAGE',
         currentPage
     } as const
 }
-
-export const setUsersAC = (users:UserType[]) => {
+export const setUsers = (users: UserType[]) => {
     return {
         type: 'SET-USERS',
-        users:users
+        users: users
     } as const
 }
-
-export const setTotalcountAC = (totalCount:number) => {
+export const setTotalUserCount = (totalUserCount: number) => {
     return {
         type: 'SET-TOTAL-COUNT',
-        totalCount,
+        totalUserCount,
     } as const
 }
-
-
-export const followUserAC = (UserId: number) => {
+export const follow = (UserId: number) => {
     return {
         type: 'FOLLOW-USER',
         UserId: UserId
     } as const
 }
-
-export const unFollowUserAC = (UserId: number) => {
+export const unFollow = (UserId: number) => {
     return {
         type: 'UNFOLLOW-USER',
         UserId: UserId
     } as const
 }
-
-export const addPostAC = () => {
+export const setFollowingProgress = (id: number) => {
     return {
-        type: "ADD-POST"
+        type: "SET-ID-FOLLOWING-PROGRESS",
+        id
     } as const
 }
-export const addMessageAC = () => {
+export const removeFollowingProgress = (id: number) => {
+    return {
+        type: "REMOVE-ID-FOLLOWING-PROGRESS",
+        id
+    } as const
+}
+
+/* For Dialogs reducer */
+export const addMessage = () => {
     return {
         type: "ADD-MESSAGE"
     } as const
 }
-export const updateNewMessageTextAC = (text: string | undefined) => {
+export const updateNewMessageText = (text: string | undefined) => {
     return {
         type: "UPDATE-NEW-MESSAGE-TEXT",
         text: text
     } as const
 }
-export const updateNewPostTextAC = (text: string) => {
+
+/* For Profile reducer */
+export const addPost = () => {
+    return {
+        type: "ADD-POST"
+    } as const
+}
+export const updateNewPostText = (text: string) => {
     return {
         type: "UPDATE-NEW-POST-TEXT",
         text: text
+    } as const
+}
+export const setAboutMe = (text: string) => {
+    return {
+        type: "SET-ABOUT-ME",
+        text
+    } as const
+}
+export const setContacts = (contacts: { vk: string, twitter: string }) => {
+    return {
+        type: "SET-CONTACTS",
+        contacts
+    } as const
+}
+export const setFullName = (text: string) => {
+    return {
+        type: "SET-FULLNAME",
+        text
+    } as const
+}
+export const setLookingForAJob = (status: boolean) => {
+    return {
+        type: "SET-LOOKING-FOR-A-JOB",
+        status
+    } as const
+}
+export const setLookingForAJobDescription = (text: string) => {
+    return {
+        type: "SET-LOOKING-FOR-A-JOB-DESCRIPTION",
+        text
+    } as const
+}
+export const setPhotos = (photos: { small: string, large: string }) => {
+    return {
+        type: "SET-PHOTOS",
+        photos
+    } as const
+}
+export const setUserId = (userId: number) => {
+    return {
+        type: "SET-USER-ID",
+        userId
+    } as const
+}
+
+//For auth reducer
+
+export type AuthDataType = { id: number, login: string, email: string }
+
+export const authUser = (authData: AuthDataType) => {
+    return {
+        type: 'AUTH-USER',
+        authData
     } as const
 }
 

@@ -2,17 +2,23 @@ import classes from "./Profile.module.css"
 import {MyPostsContainer} from "./MyPosts/MyPostsContainer";
 import React from "react";
 import {ProfileInfo} from "./ProfileInfo/ProfileInfo";
-import {ReduxStoreType} from "../../redux/redux-store";
+import {PresentationProfileType, ProfilePageType} from "../../redux/store";
 
-type ProfilePropsType = {
-    store:ReduxStoreType
-}
 
-export const Profile = (props:ProfilePropsType) => {
-    return(
+export const Profile = (props: PresentationProfileType) => {
+    console.log('rendering')
+    return (
         <div className={classes.Profile}>
-          <ProfileInfo description={"Ava + description"}/>
-           <MyPostsContainer/>
+            <ProfileInfo aboutMe={props.aboutMe}
+                         lookingForAJob={props.lookingForAJob}
+                         fullName={props.fullName}
+                         userId={props.userId}
+                         photos={props.photos}
+                         contacts={props.contacts}
+                         lookingForAJobDescription={props.lookingForAJobDescription}
+            />
+            <hr/>
+            <MyPostsContainer/>
         </div>
     )
 }

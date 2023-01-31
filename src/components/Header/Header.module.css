@@ -5,6 +5,10 @@
     background:cornflowerblue;
 }
 
+.login{
+    margin: 10px 20px;
+}
+
 .Header .Logo{
     height: auto;
     width: auto;

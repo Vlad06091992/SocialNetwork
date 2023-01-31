@@ -16,7 +16,7 @@ export const Sidebar: React.FC<SidebarPropsType> = (props) => {
 
         <div className={classes.Sidebar}>
             <NavLink className={active} to="/Profile">Profile</NavLink>
-            <NavLink className={active} to="/DialogsContainer">Messages</NavLink>
+            <NavLink className={active} to="/DialogsContainer">Dialogs</NavLink>
             <NavLink className={active} to="/News">News</NavLink>
             <NavLink className={active} to="/Music">Music</NavLink>
             <NavLink className={active} to="/Settings">Settings</NavLink>
