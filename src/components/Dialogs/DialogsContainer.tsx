@@ -1,28 +1,28 @@
 import React from "react";
-import {DispatchType, RootStateType
-} from "../../redux/store";
-
-
+import {RootStateType} from "../../redux/store";
 import {addMessage} from "../../redux/store";
-import {updateNewMessageText} from "../../redux/store";
+
 import {Dialogs} from "./Dilaogs";
 import {connect} from "react-redux";
+import {WithAuthRedirect} from "../../hoc/WithAuthRedirect";
+import {compose, Dispatch} from "redux";
+
+
 
 let mapStateToProps = (state: RootStateType) => {
     return {
         dialogsPage: state.dialogsPage,
-        textAreaValue: state.dialogsPage.newMessageText
-    }
 
+    }
 }
 
-let mapDispatchToProps = (dispatch: DispatchType) => {
+let mapDispatchToProps = (dispatch: Dispatch) => {
     return{
-        sendMessage:()=>dispatch(addMessage()),
-        updateNewMessageText:(text: string) => dispatch(updateNewMessageText(text))
+        sendMessage:(text:string)=>dispatch(addMessage(text)),
 //     }
     }
-
 }
 
-export const DialogsContainer = connect(mapStateToProps,mapDispatchToProps)(Dialogs)
+// export const DialogsContainer = WithAuthRedirect(connect(mapStateToProps,mapDispatchToProps)(Dialogs))
+
+export default compose<React.ComponentType>(WithAuthRedirect,(connect(mapStateToProps,mapDispatchToProps)  ))(Dialogs)

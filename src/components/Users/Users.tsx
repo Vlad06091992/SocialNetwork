@@ -10,13 +10,11 @@ type UsersPropsType = {
     pageSize: number
     currentPage: number
     onPageChanged: (currentPage: number) => void
-    follow: (userId: number) => void
-    unFollow: (userId: number) => void
     users: UserType[]
-    isFetching: boolean
-    setFollowingProgress: (id: number) => void
-    removeFollowingProgress: (id: number) => void
     followingInProgress: Array<number>
+    followUser:(id:number)=>void
+    unFollowUser:(id:number)=>void
+
 
 }
 
@@ -28,35 +26,18 @@ export const Users = (props: UsersPropsType) => {
     }
 
     const follow = (id: number) => {
-        props.setFollowingProgress(id)
-        console.log(props.followingInProgress)
-        UsersApi.followUser(id)
-            .then(data => {
-                if (data.resultCode == 0) {
-                    props.follow(id)
-                }
-                props.removeFollowingProgress(id)
-            })
-
+      props.followUser(id)
     }
 
     const unFollow = (id: number) => {
-        props.setFollowingProgress(id)
-        UsersApi.unFollowUser(id)
-            .then(data => {
-                if (data.resultCode == 0) {
-                    props.unFollow(id)
-                }
-                props.removeFollowingProgress(id)
-            })
-
+      props.unFollowUser(id)
     }
 
 
     return (
         <div>
             <div>
-                {props.isFetching && <Preloader/>}
+                {/*{props.isFetching && <Preloader/>}*/}
             </div>
             <div style={{maxWidth: '100%', margin: '10px', marginRight: '30px'}}>
                 {pages.map(el => <span className={el === props.currentPage ? classes.bold : ""} key={el}

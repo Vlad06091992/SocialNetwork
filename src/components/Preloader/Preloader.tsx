@@ -4,6 +4,6 @@ import React from "react";
 
 export const Preloader = () => {
     return(
-        <img className={classes.Preloader} src={preloader}></img>
+        <img alt={"Preloader"} className={classes.Preloader} src={preloader}></img>
     )
 }

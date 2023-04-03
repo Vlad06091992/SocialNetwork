@@ -1,42 +1,51 @@
 import React from "react";
 import {Profile} from "./Profile";
 import {connect} from "react-redux";
-import {DispatchType, ProfileContainerType, RootStateType, setAboutMe, setContacts,
-    setFullName, setLookingForAJob, setLookingForAJobDescription, setPhotos, setUserId,
-} from "../../redux/store";
-import axios from "axios";
+import {ProfileContainerType, RootStateType} from "../../redux/store";
 import {withRouter} from "react-router-dom";
-import {RouteComponentProps} from "react-router";
-import {UsersApi} from "../../api/api";
+import {getUserProfile, getUserStatus, updateStatus} from "../../redux/profile-reducer";
+import {WithAuthRedirect} from "../../hoc/WithAuthRedirect";
+import {compose} from "redux";
+import {Preloader} from "../Preloader/Preloader";
 
-class ProfileContainer extends React.Component<ProfileContainerType & RouteComponentProps> {
-    componentDidMount() {
+class ProfileContainer extends React.Component<ProfileContainerType> {
 
-        let userId = this.props.match.params.userId
-        UsersApi.getUserProfile(userId)
-            .then(response => {
-                this.props.setAboutMe(response.aboutMe)
-                this.props.setContacts(response.contacts)
-                this.props.setUserId(response.aboutMe)
-                this.props.setFullName(response.fullName)
-                this.props.setLookingForAJob(response.lookingForAJob)
-                this.props.setLookingForAJobDescription(response.lookingForAJobDescription)
-                this.props.setPhotos(response.photos)
-                this.props.setUserId(response.userId)
-            })
+    componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<any>, snapshot?: any) {
+        if(prevProps.match.params.userId != this.props.match.params.userId){
 
+            let userId = this.props.match.params.userId
+            if(!userId) userId = 27091
+            this.props.getUserProfile(userId)
+            this.props.getUserStatus(userId)
+        }
 
     }
 
+
+    componentDidMount() {
+        let userId = this.props.match.params.userId
+        if(!userId) userId = 27091
+        this.props.getUserProfile(userId)
+        this.props.getUserStatus(userId)
+    }
+
+
+
+
     render() {
+        if(!this.props.profilePage) return <Preloader/>
+
         return (
-            <Profile userId={this.props.userId}
-                     aboutMe={this.props.aboutMe}
-                     photos={this.props.photos}
-                     fullName={this.props.fullName}
-                     lookingForAJob={this.props.lookingForAJob}
-                     contacts={this.props.contacts}
-                     lookingForAJobDescription={this.props.lookingForAJobDescription}/>
+            <Profile userId={this.props.profilePage.userId}
+                     aboutMe={this.props.profilePage.aboutMe}
+                     photos={this.props.profilePage.photos}
+                     fullName={this.props.profilePage.fullName}
+                     lookingForAJob={this.props.profilePage.lookingForAJob}
+                     contacts={this.props.profilePage.contacts}
+                     lookingForAJobDescription={this.props.profilePage.lookingForAJobDescription}
+                     status={this.props.status}
+                     updateStatus={this.props.updateStatus}
+            />
         )
 
     }
@@ -44,29 +53,16 @@ class ProfileContainer extends React.Component<ProfileContainerType & RouteCompo
 
 let mapStateToProps = (state: RootStateType) => {
     return {
-        aboutMe: state.profilePage.aboutMe,
-        contacts: state.profilePage.contacts,
-        fullName: state.profilePage.fullName,
-        lookingForAJob: state.profilePage.lookingForAJob,
-        lookingForAJobDescription: state.profilePage.lookingForAJobDescription,
-        photos: state.profilePage.photos,
-        userId: state.profilePage.userId
-
+        profilePage: state.profilePage,
+        status:state.profilePage.status
     }
 }
 
-let mapDispatchToProps = (dispatch: DispatchType) => {
-    return {
-        setAboutMe: (text: string) => dispatch(setAboutMe(text)),
-        setContacts: (contacts: { vk: string, twitter: string }) => dispatch(setContacts(contacts)),
-        setFullName: (text: string) => dispatch(setFullName(text)),
-        setLookingForAJob: (status: boolean) => dispatch(setLookingForAJob(status)),
-        setLookingForAJobDescription: (text: string) => dispatch(setLookingForAJobDescription(text)),
-        setPhotos: (photos: { small: string, large: string }) => dispatch(setPhotos(photos)),
-        setUserId: (userId: number) => dispatch(setUserId(userId))
-    }
-}
+// export default  WithAuthRedirect(withRouter(connect(mapStateToProps, {getUserProfile,updateStatus,  getUserStatus,})(ProfileContainer)))
+export default compose<React.ComponentType>(
+    (connect(mapStateToProps, {getUserProfile,updateStatus,  getUserStatus,})),
+    withRouter,
+    // WithAuthRedirect,
+)(ProfileContainer)
 
-let withUrlDataContainerComponent = withRouter(ProfileContainer)
 
-export default connect(mapStateToProps, mapDispatchToProps)(withUrlDataContainerComponent)

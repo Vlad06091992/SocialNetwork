@@ -17,9 +17,6 @@ type UsersPropsType = {
 
 
 export const User = (props:UsersPropsType) => {
-    console.log(props.followingInProgress)
-    console.log(props.id)
-
     return (
         <div className={classes.wrapper}>
             <div>

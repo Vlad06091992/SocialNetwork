@@ -2,11 +2,10 @@ import classes from "./Profile.module.css"
 import {MyPostsContainer} from "./MyPosts/MyPostsContainer";
 import React from "react";
 import {ProfileInfo} from "./ProfileInfo/ProfileInfo";
-import {PresentationProfileType, ProfilePageType} from "../../redux/store";
+import {ProfilePropsType} from "../../redux/store";
 
 
-export const Profile = (props: PresentationProfileType) => {
-    console.log('rendering')
+export const Profile = (props: ProfilePropsType) => {
     return (
         <div className={classes.Profile}>
             <ProfileInfo aboutMe={props.aboutMe}
@@ -16,6 +15,9 @@ export const Profile = (props: PresentationProfileType) => {
                          photos={props.photos}
                          contacts={props.contacts}
                          lookingForAJobDescription={props.lookingForAJobDescription}
+                         status={props.status}
+                         updateStatus={props.updateStatus}
+
             />
             <hr/>
             <MyPostsContainer/>

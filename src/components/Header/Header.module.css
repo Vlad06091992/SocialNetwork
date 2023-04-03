@@ -20,6 +20,10 @@
     font-size: 35px;
 }
 
+.button{
+    margin:auto;
+}
+
 @keyframes rotation {
     from {
         transform: rotate(0deg);

@@ -1,6 +1,6 @@
-import {ActionsType, DialogMessageType, MessagesPageType} from "./store";
+import {ActionsType, DialogMessageType, DialogsStateType} from "./store";
 
-let initialState: MessagesPageType = {
+let initialState: DialogsStateType = {
     dialogsData: [
         {name: "Valera", id: 1},
         {name: "Sveta", id: 2},
@@ -18,18 +18,16 @@ let initialState: MessagesPageType = {
     newMessageText: ""
 }
 
-export const dialogsReducer = (state: MessagesPageType = initialState, action: ActionsType) => {
+export const dialogsReducer = (state: DialogsStateType = initialState, action: ActionsType) => {
     switch (action.type) {
-        case ("UPDATE-NEW-MESSAGE-TEXT"):
-            return {...state, newMessageText: action.text}
+
         case ("ADD-MESSAGE"): {
             const getNextId = () => {
                 if (state.dialogMessage.length === 0) return 0
                 return state.dialogMessage[state.dialogMessage.length - 1].id + 1
             }
-            let newMessage: DialogMessageType = {id: getNextId(), message: state.newMessageText}
-            state.newMessageText = ''
-            return {...state, newMessageText: "", dialogMessage: [...state.dialogMessage, newMessage]}
+            let newMessage: DialogMessageType = {id: getNextId(), message: action.text}
+            return {...state, dialogMessage: [...state.dialogMessage, newMessage]}
         }
         default:
             return state

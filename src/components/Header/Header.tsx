@@ -1,19 +1,35 @@
 import React from "react";
 import classes from "./Header.module.css"
+import {HeaderContainerPropsType} from "./HeaderContainer";
+import {NavLink} from "react-router-dom";
+
+export const Header: React.FC<HeaderContainerPropsType> = (props) => {
+
+console.log(props)
 
 
-type HeaderPropsType = {
-    login: string | null
-}
 
-export const Header: React.FC<HeaderPropsType> = (props) => {
     return (
         <div className={classes.Header}>
             <img className={classes.Logo} src="https://cdn.worldvectorlogo.com/logos/react-2.svg"/>
             <div className={classes.Welcome}>Welcome to my project</div>
 
-            {props.login != null ? <div className={classes.login}>Вы вошли как :
-                {props.login}</div> : <div className={classes.login}>Вы не авторизованы</div>}
+            {props.auth.isAuth ?
+                <div>
+                    <div className={classes.login}>Вы вошли как :
+                        {props.auth.login}
+                        <button className={classes.button} onClick={()=>{props.logout()}}>logout</button>
+                    </div>
+                </div>
+                :
+                <NavLink to="/Login">Login</NavLink>
+
+            }
+
+
         </div>
     )
 }
+
+
+
