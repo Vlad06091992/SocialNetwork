@@ -10,7 +10,7 @@ import {
     getCurrentPage,
     getPageSize,
     getTotalUserCount, getSelectorUsers,
-    isFetching
+    isFetching, getSelectorUsersSuper
 } from "../../redux/users-selectors";
 import { requestUsers } from "../../redux/profile-reducer";
 
@@ -65,7 +65,7 @@ class UsersApiComponent extends React.Component<UsersApiPropsType> {
 let mapStateToProps = (state: RootStateType) => {
     console.log("MSTP users")
     return {
-        users: getSelectorUsers(state),
+        users: getSelectorUsersSuper(state),
         totalUserCount: getTotalUserCount(state),
         pageSize: getPageSize(state),
         currentPage: getCurrentPage(state),
