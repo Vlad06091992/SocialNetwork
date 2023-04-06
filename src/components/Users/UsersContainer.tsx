@@ -2,9 +2,17 @@ import React from "react";
 import {connect} from "react-redux";
 import {RootStateType, UserType} from "../../redux/store";
 import {Users} from "./Users";
-import {getUsers} from "../../redux/profile-reducer";
+
 import {followUser, unFollowUser} from "../../redux/users-reducer";
 import {WithAuthRedirect} from "../../hoc/WithAuthRedirect";
+import {
+    followingInProgress,
+    getCurrentPage,
+    getPageSize,
+    getTotalUserCount, getSelectorUsers,
+    isFetching
+} from "../../redux/users-selectors";
+import { requestUsers } from "../../redux/profile-reducer";
 
 type UsersApiPropsType = {
     users: UserType[]
@@ -25,6 +33,7 @@ class UsersApiComponent extends React.Component<UsersApiPropsType> {
         super(props);
     }
 
+
     componentDidMount() {
         this.props.getUsers(this.props.pageSize)
     }
@@ -34,6 +43,7 @@ class UsersApiComponent extends React.Component<UsersApiPropsType> {
     }
 
     render() {
+        console.log("render users")
         return (
             <Users
                    totalUserCount={this.props.totalUserCount}
@@ -50,19 +60,24 @@ class UsersApiComponent extends React.Component<UsersApiPropsType> {
     }
 }
 
+
+
 let mapStateToProps = (state: RootStateType) => {
+    console.log("MSTP users")
     return {
-        users: state.usersPage.users,
-        totalUserCount: state.usersPage.totalUserCount,
-        pageSize: state.usersPage.pageSize,
-        currentPage: state.usersPage.currentPage,
-        isFetching: state.usersPage.isFetching,
-        followingInProgress: state.usersPage.followingInProgress,
+        users: getSelectorUsers(state),
+        totalUserCount: getTotalUserCount(state),
+        pageSize: getPageSize(state),
+        currentPage: getCurrentPage(state),
+        isFetching: isFetching(state),
+        followingInProgress: followingInProgress(state)
     }
 }
 
-export const UsersContainer = WithAuthRedirect(connect(mapStateToProps, {
-    getUsers,
+
+// @ts-ignore
+export const UsersContainer = connect(mapStateToProps, {
+    getUsers: requestUsers,
     followUser,
     unFollowUser
-})(UsersApiComponent))
+})(UsersApiComponent)

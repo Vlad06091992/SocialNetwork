@@ -1,5 +1,5 @@
 import {ActionsType, SidebarStateType, UserType} from "./store";
-import {setCurrentPage, setFetching, setTotalUserCount, setUsers} from "./users-reducer";
+import { setFetching, } from "./users-reducer";
 import {UsersApi} from "../api/api";
 import {Dispatch} from "redux";
 
@@ -26,7 +26,7 @@ export const setFriends = (friends: UserType[]) => {
 
 export type GetFriendsType = ReturnType<typeof setFriends>
 
-export type ForSideBarType = GetFriendsType
+export type ForSideBarReducerType = GetFriendsType
 
 
 export const getFriends = (pageSize?: number, currentPage: number = 1) => {

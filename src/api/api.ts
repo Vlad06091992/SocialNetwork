@@ -36,10 +36,15 @@ export const UsersApi = {
 
 export const ProfileApi = {
     getUserProfile: (userId: number) => {
+        if(userId != null)
         return instance.get(`profile/${userId}`).then(response => response.data)
+        return new Promise((resolve)=>{})
     },
     getUserStatus: (userId: number) => {
+        if(userId != null)
         return instance.get(`profile/status/${userId}`).then(response => response.data)
+        return new Promise((resolve)=>{})
+
     },
     updateStatus: (status:string) => {
         return instance.put(`profile/status/`, {status})

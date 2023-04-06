@@ -1,7 +1,7 @@
 import React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import {SubmitHandler, useForm} from "react-hook-form";
 import {connect} from "react-redux";
-import {getAuthUserData, login} from "../../redux/auth-reducer";
+import {AuthStateType, loginTC} from "../../redux/auth-reducer";
 import {RootStateType} from "../../redux/store";
 import css from "./Login.module.css"
 import {Redirect} from "react-router-dom";
@@ -10,18 +10,22 @@ import {Redirect} from "react-router-dom";
 type FormValues = {
     login: string;
     password: string;
-    rememberMe: string;
+    rememberMe: boolean;
 };
 
- function LoginForm(props:any) {
-     const { register,setError, handleSubmit, formState:{errors},reset } = useForm<FormValues>();
+type LoginFormType = {
+    auth:AuthStateType,
+    login:( login: string, password: string,rememberMe: boolean)=>void
+}
+
+ function LoginForm(props:LoginFormType) {
+     const { register, handleSubmit, formState:{errors},reset } = useForm<FormValues>();
 
 
 
      const onSubmit: SubmitHandler<FormValues> = ({login,password,rememberMe}) => {
-        let err =  props.login(login,password,rememberMe)
-         // props.authMe()
-         reset()
+        props.login(login,password,rememberMe)
+
      };
 
      if(props.auth.isAuth){
@@ -56,13 +60,9 @@ let mapStateToProps = (state: RootStateType) => {
     }
 }
 
-export default connect(mapStateToProps, {authMe: getAuthUserData,login})(LoginForm);
+export default connect(mapStateToProps, { login: loginTC})(LoginForm);
 
-// export const Login = () => {
-//     return (
-//         <div>Login</div>
-//     )
-// }
+
 
 
 

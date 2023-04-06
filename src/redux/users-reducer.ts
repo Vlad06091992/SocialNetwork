@@ -3,41 +3,46 @@ import {UsersApi} from "../api/api";
 import {Dispatch} from "redux";
 
 let initialState = {
- users:   [],
-    totalUserCount:0,
-    pageSize:100,
-    currentPage:1,
-    isFetching:false,
-    followingInProgress:[2]
+    users: [],
+    totalUserCount: 0,
+    pageSize: 100,
+    currentPage: 1,
+    isFetching: false,
+    followingInProgress: [2],
+    fake:0
 }
-export const userReducer = (state: UsersStateType = initialState, action: ActionsType):UsersStateType => {
+export const userReducer = (state: UsersStateType = initialState, action: ActionsType): UsersStateType => {
     switch (action.type) {
+        case("FAKE"): {
+            return {...state, fake : state.fake + 1}
+
+        }
         case("FOLLOW-USER"): {
-            return {...state, users:state.users.map(el => el.id === action.UserId ? {...el,followed : true}: el)}
+            return {...state, users: state.users.map(el => el.id === action.UserId ? {...el, followed: true} : el)}
 
         }
         case ("UNFOLLOW-USER"): {
-            return {...state, users:state.users.map(el => el.id === action.UserId ? {...el,followed : false}: el)}
+            return {...state, users: state.users.map(el => el.id === action.UserId ? {...el, followed: false} : el)}
         }
 
         case ("SET-USERS"): {
-            return {...state , users:[...action.users]}
+            return {...state, users: [...action.users]}
         }
         case ("SET-TOTAL-COUNT"): {
-            return {...state , totalUserCount:(action.totalUserCount)}
+            return {...state, totalUserCount: (action.totalUserCount)}
         }
 
         case ("SET-CURRENT-PAGE"): {
-            return {...state , currentPage:(action.currentPage)}
+            return {...state, currentPage: (action.currentPage)}
         }
         case ("TOGGLE-FETCHING"): {
-            return {...state , isFetching:(action.isFetching)}
+            return {...state, isFetching: (action.isFetching)}
         }
         case ("SET-ID-FOLLOWING-PROGRESS"): {
-            return {...state , followingInProgress:[...state.followingInProgress, action.id]}
+            return {...state, followingInProgress: [...state.followingInProgress, action.id]}
         }
         case ("REMOVE-ID-FOLLOWING-PROGRESS"): {
-            return {...state , followingInProgress:state.followingInProgress.filter(id=> id !== action.id)}
+            return {...state, followingInProgress: state.followingInProgress.filter(id => id !== action.id)}
         }
 
         default:
@@ -117,8 +122,8 @@ export type ForUsersReducerTypes =
     | RemoveFollowingProgress
 
 
-export const followUser = (id:number) => {
-    return  (dispatch:Dispatch) => {
+export const followUser = (id: number) => {
+    return (dispatch: Dispatch) => {
         dispatch(setFollowingProgress(id))
         UsersApi.followUser(id)
             .then(data => {
@@ -131,8 +136,8 @@ export const followUser = (id:number) => {
     }
 }
 
-export const unFollowUser = (id:number) => {
-    return  (dispatch:Dispatch) => {
+export const unFollowUser = (id: number) => {
+    return (dispatch: Dispatch) => {
         dispatch(setFollowingProgress(id))
         UsersApi.unFollowUser(id)
             .then(data => {

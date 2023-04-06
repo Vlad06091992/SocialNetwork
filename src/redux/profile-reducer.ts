@@ -149,12 +149,12 @@ export type ForProfileReducerType =
 
 
 
-export const getUsers = (pageSize?: number, currentPage: number = 1) => {
+export const requestUsers = (pageSize?: number, currentPage: number = 1) => {
     return (dispatch: Dispatch) => {
-        // dispatch(setFetching(true))
+        dispatch(setFetching(true))
         UsersApi.getUsers(pageSize, currentPage)
             .then(response => {
-                // dispatch(setFetching(false))
+                dispatch(setFetching(false))
                 dispatch(setUsers(response.items))
                 dispatch(setTotalUserCount(response.totalCount))
                 dispatch(setCurrentPage(currentPage))

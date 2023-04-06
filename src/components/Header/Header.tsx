@@ -5,7 +5,6 @@ import {NavLink} from "react-router-dom";
 
 export const Header: React.FC<HeaderContainerPropsType> = (props) => {
 
-console.log(props)
 
 
 
@@ -18,7 +17,7 @@ console.log(props)
                 <div>
                     <div className={classes.login}>Вы вошли как :
                         {props.auth.login}
-                        <button className={classes.button} onClick={()=>{props.logout()}}>logout</button>
+                        <button className={classes.button} onClick={()=>{props.logoutTC()}}>logout</button>
                     </div>
                 </div>
                 :

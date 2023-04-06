@@ -1,10 +1,13 @@
 import {ChangeEvent} from "react";
-import {AuthStateType, ForAuthUser, SetServerError} from "./auth-reducer";
+import {AuthStateType, ForAuthReducerrTypes} from "./auth-reducer";
 import {ForUsersReducerTypes} from "./users-reducer";
 import {RouteComponentProps} from "react-router";
 import {ForProfileReducerType} from "./profile-reducer";
-import { ForSideBarType} from "./sidebar-reducer";
+import {ForSideBarReducerType} from "./sidebar-reducer";
 import {ThunkAction} from "redux-thunk";
+import {AppStateType, ForAppReducerTypes} from "./app-reducer";
+import {FakeType} from "../index";
+
 export type DialogDataType = {
     name: string
     id: number
@@ -25,7 +28,6 @@ export type DialogsStateType = {
 }
 
 
-
 export type ProfileType = {
     aboutMe: string,
     contacts: { vk: string, twitter: string }
@@ -40,8 +42,6 @@ export type ProfileType = {
 }
 
 
-
-
 export type ProfileInfoPropsType = {
     aboutMe: string,
     contacts: { vk: string, twitter: string }
@@ -53,26 +53,28 @@ export type ProfileInfoPropsType = {
         large: string
     }
     userId: number,
-    status:string
+    status: string
 }
 
 export type ProfileStateType = ProfileInfoPropsType & {
     postData: Array<PostDataType>,
-        newPostText: string
+    newPostText: string
 }
 
 
 export type ProfileContainerType = RouteComponentProps & {
-    match: {isExact: boolean
-    params: {userId: number}
-    path: string
-    url:string,
+    match: {
+        isExact: boolean
+        params: { userId: number }
+        path: string
+        url: string,
     }
-    getUserProfile:(userId:number)=>void
-    updateStatus:(status:string)=>void
-    getUserStatus:(userId:number)=>void
-    profilePage:ProfileStateType
-    status:string
+    getUserProfile: (userId: number) => void
+    updateStatus: (status: string) => void
+    getUserStatus: (userId: number) => void
+    profilePage: ProfileStateType
+    status: string
+    userId: number
 }
 
 export type ProfilePropsType = {
@@ -86,8 +88,8 @@ export type ProfilePropsType = {
         large: string
     }
     userId: number,
-    status:string
-    updateStatus:(status:string)=>void
+    status: string
+    updateStatus: (status: string) => void
 }
 
 
@@ -105,6 +107,7 @@ export type RootStateType = {
     sidebarPage: SidebarStateType
     usersPage: UsersStateType
     auth: AuthStateType
+    appInitialized: AppStateType
 }
 export type UsersStateType = {
     users: UserType[]
@@ -113,6 +116,7 @@ export type UsersStateType = {
     currentPage: number
     isFetching: boolean
     followingInProgress: Array<number>
+    fake: number
 
 
 }
@@ -134,25 +138,24 @@ export type LocationType = {
 }
 
 
-
-
 type ForDialogsReducerTypes = AddMessageACType
 
 
-export type ActionsType =  ForUsersReducerTypes | ForDialogsReducerTypes | ForProfileReducerType | SetServerError |ForAuthUser | ForSideBarType
-
+export type ActionsType =
+    ForUsersReducerTypes
+    | ForDialogsReducerTypes
+    | ForProfileReducerType
+    | ForAuthReducerrTypes
+    | ForSideBarReducerType
+    | ForAppReducerTypes
+    | FakeType
 
 
 /* For Dialogs reducer */
 
 
-
-
-
-
-
 /* For Dialogs reducer */
-export const addMessage = (text:string) => {
+export const addMessage = (text: string) => {
     return {
         type: "ADD-MESSAGE",
         text

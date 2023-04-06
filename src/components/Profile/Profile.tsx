@@ -3,9 +3,12 @@ import {MyPostsContainer} from "./MyPosts/MyPostsContainer";
 import React from "react";
 import {ProfileInfo} from "./ProfileInfo/ProfileInfo";
 import {ProfilePropsType} from "../../redux/store";
+import {Redirect} from "react-router-dom";
 
 
 export const Profile = (props: ProfilePropsType) => {
+    console.log("render profile")
+
     return (
         <div className={classes.Profile}>
             <ProfileInfo aboutMe={props.aboutMe}

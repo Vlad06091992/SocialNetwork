@@ -1,10 +1,7 @@
 import {ActionsType, RootStateType} from "./store";
 import {AuthApi} from "../api/api";
-import {useForm} from "react-hook-form";
-import {Dispatch} from "redux";
-import {ThunkAction} from "redux-thunk";
-import {News} from "../components/News/News";
 import {AppDispatch, AppThunk} from "./redux-store";
+import {Dispatch} from "redux";
 
 
 export type AuthStateType = {
@@ -62,9 +59,10 @@ export const setServerError = (error: string) => {
 }
 
 
-export const getAuthUserData = () => {
-    return (dispatch: any) => {
-        AuthApi.me()
+export const getAuthUserDataTC = () => {
+
+    return (dispatch: Dispatch) => {
+        return  AuthApi.me()
             .then(res => {
                 if (res.data.resultCode === 0) {
                     let {id, email, login} = res.data.data
@@ -76,15 +74,15 @@ export const getAuthUserData = () => {
 
 
 
-console.log(typeof getAuthUserData)
 
 
-export const login = (email: string, password: string, remeberMe: boolean): AppThunk => {
+
+export const loginTC = (email: string, password: string, remeberMe: boolean): AppThunk => {
     try {
         return async dispatch => {
             let res = await AuthApi.login(email, password, remeberMe)
             if (res.data.resultCode === 0) {
-                dispatch(getAuthUserData())
+                dispatch(getAuthUserDataTC())
             } else {
                 dispatch(setServerError(res.data.messages[0]))
             }
@@ -96,7 +94,7 @@ export const login = (email: string, password: string, remeberMe: boolean): AppT
 
 
 
-export const logout = () => {
+export const logoutTC = () => {
     return (dispatch: AppDispatch) => {
         AuthApi.logout()
             .then(res => {
@@ -109,7 +107,7 @@ export const logout = () => {
 }
 
 
+export type ForAuthReducerrTypes = ForAuthUser | SetServerError
 
-
-export type ForAuthUser = ReturnType<typeof setAuthUserData>
-export type SetServerError = ReturnType<typeof setServerError>
+type ForAuthUser = ReturnType<typeof setAuthUserData>
+type SetServerError = ReturnType<typeof setServerError>
