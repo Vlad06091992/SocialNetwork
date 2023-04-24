@@ -1,9 +1,10 @@
 import React from "react";
 import css from "./ProfileInfo.module.css";
-import {ProfileStatus} from "../ProfileStatus";
+import {ProfileStatusClassComponent} from "../ProfileStatusClassComponent";
 import profileContainer from "../ProfileContainer";
 import {ProfileContainerType, ProfilePropsType} from "../../../redux/store";
 import {Preloader} from "../../Preloader/Preloader";
+import {ProfileStatus} from "../ProfileStatus";
 
 
 export const ProfileInfo:React.FC<ProfilePropsType> = (props) => {

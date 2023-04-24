@@ -1,44 +1,35 @@
-import React, {ChangeEvent} from "react";
-import {ProfileContainerType} from "../../redux/store";
-import {Profile} from "./Profile";
+import React, {ChangeEvent, useEffect, useState} from "react";
+
 
 type ProfileStatusPropsType = {
     status: string
     updateStatus: (status: string) => void
 }
 
-export class ProfileStatus extends React.Component<ProfileStatusPropsType> {
+export const ProfileStatus = (props:ProfileStatusPropsType) => {
 
-  componentDidUpdate(prevProps: Readonly<ProfileStatusPropsType>, prevState: Readonly<{}>, snapshot?: any) {
-      if (prevProps.status != this.props.status){
-          this.setState({status:this.props.status})
-      }
-  }
+    const[editMode,setEditMode] = useState(false)
+    const[status,setStatus] = useState(props.status)
 
-    state = {
-        editMode: false,
-        status: this.props.status
+    useEffect(()=>{
+        setStatus(props.status)
+    },[props.status])
+
+    const onChangeHandler = (str:string) => {
+       setStatus(str)
     }
 
-    ActivateEditMode = () => {
-        this.setState({editMode: true})
-    }
-    DeActivateEditMode = () => {
-        this.setState({editMode: false})
-        this.props.updateStatus(this.state.status)
+    const onBlurHandler = () =>{
+        setEditMode(false)
+        props.updateStatus(status)
     }
 
-    onChangeHandler  = (value:string) => {
-        this.setState({status: value})
-    }
-
-    render() {
         return (
             <div>
-                {this.state.editMode && <input onChange={(e:ChangeEvent<HTMLInputElement>)=>this.onChangeHandler(e.currentTarget.value)} autoFocus onBlur={this.DeActivateEditMode} value={this.state.status}/>}
-                {!this.state.editMode && <span onDoubleClick={this.ActivateEditMode}>{this.state.status || '-----'}</span>}
+                {editMode && <input onChange={(e:ChangeEvent<HTMLInputElement>)=>onChangeHandler(e.currentTarget.value)} autoFocus onBlur={()=>onBlurHandler()} value={status}/>}
+                {!editMode && <span onDoubleClick={()=>setEditMode(true)}>{status || '-----'}</span>}
             </div>
         )
-    }
+
 
 }
