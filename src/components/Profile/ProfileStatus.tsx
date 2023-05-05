@@ -10,6 +10,8 @@ export const ProfileStatus = (props:ProfileStatusPropsType) => {
 
     const[editMode,setEditMode] = useState(false)
     const[status,setStatus] = useState(props.status)
+debugger
+    console.log(1)
 
     useEffect(()=>{
         setStatus(props.status)
