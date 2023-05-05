@@ -30,7 +30,10 @@ export type AppDispatch = ThunkDispatch<RootStateType, unknown, ActionsType>
 export type ReduxStoreType = typeof store
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootStateType, unknown, ActionsType>
 
-// window.store = store
+//@ts-ignore
+window.store = store
+
+console.log(store.getState().profilePage.postData)
 
 
 

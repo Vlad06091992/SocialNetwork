@@ -16,7 +16,7 @@ class ProfileContainer extends React.Component<ProfileContainerType> {
 
 
     componentDidMount() {
-       this.goToProfile()
+        this.goToProfile()
     }
 
     goToProfile(){
@@ -46,6 +46,7 @@ class ProfileContainer extends React.Component<ProfileContainerType> {
                      lookingForAJobDescription={this.props.profilePage.lookingForAJobDescription}
                      status={this.props.status}
                      updateStatus={this.props.updateStatus}
+                     isLoadingDataProfile={this.props.isLoadingDataProfile}
             />
         )
 
@@ -57,7 +58,9 @@ let mapStateToProps = (state: RootStateType) => {
     return {
         profilePage: state.profilePage,
         status:state.profilePage.status,
-        userId:state.auth.userId
+        userId:state.auth.userId,
+        isLoadingDataProfile:state.appInitialized.isLoadingDataProfile
+
     }
 }
 

@@ -6,6 +6,7 @@ import {
 import {ProfileApi, UsersApi} from "../api/api";
 import {setCurrentPage, setFetching, setTotalUserCount, setUsers} from "./users-reducer";
 import {Dispatch} from "redux";
+import {setloadingProfileStatus} from "./app-reducer";
 
 let initialState: ProfileStateType = {
 
@@ -44,6 +45,8 @@ export const profileReducer = (state: ProfileStateType = initialState, action: A
             return {...state, newPostText: '', postData: [...state.postData, newPost]}
         case ("SET-ABOUT-ME"):
             return {...state, aboutMe: action.text}
+        case ("DELETE-POST"):
+            return {...state, postData: state.postData.filter(el => el.id != action.id)}
         case ("SET-CONTACTS"):
             return {...state, contacts: {...action.contacts}}
         case ("SET-FULLNAME"):
@@ -68,6 +71,14 @@ export const addPost = (text:string) => {
     return {
         type: "ADD-POST",
         text
+    } as const
+}
+
+
+export const deletePost = (id:number) => {
+    return {
+        type: "DELETE-POST",
+        id
     } as const
 }
 
@@ -123,6 +134,7 @@ export const setUserStatus = (status: string) => {
 
 
 type AddPostActionType = ReturnType<typeof addPost>
+type DeletePostActionType = ReturnType<typeof deletePost>
 type AddMessageActionType = ReturnType<typeof addMessage>
 type SetAboutMeAC = ReturnType<typeof setAboutMe>
 type SetContactsAC = ReturnType<typeof setContacts>
@@ -146,6 +158,7 @@ export type ForProfileReducerType =
     | SetPhotosAC
     | SetUserId
     | SetUserStatus
+| DeletePostActionType
 
 
 
@@ -165,6 +178,7 @@ export const requestUsers = (pageSize?: number, currentPage: number = 1) => {
 
 export const getUserProfile = (userId: number) => {
     return (dispatch: Dispatch) => {
+        dispatch({ type: 'SET-LOADING-PROFILE-STATUS', status: false })
         ProfileApi.getUserProfile(userId)
             .then(response => {
                 dispatch(setAboutMe(response.aboutMe))
@@ -176,6 +190,7 @@ export const getUserProfile = (userId: number) => {
                 dispatch(setPhotos(response.photos))
                 dispatch(setUserId(response.userId))
             })
+        dispatch({ type: 'SET-LOADING-PROFILE-STATUS', status: true })
     }
 }
 

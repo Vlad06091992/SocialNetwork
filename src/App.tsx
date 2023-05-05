@@ -33,7 +33,6 @@ class App extends React.Component<AppPropsType> {
 
 
     render() {
-        console.log("render App")
         if(this.props.initialized) {
             return <BrowserRouter>
                 <div className="app">

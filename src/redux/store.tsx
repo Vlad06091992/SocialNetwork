@@ -47,7 +47,7 @@ export type ProfileInfoPropsType = {
     contacts: { vk: string, twitter: string }
     fullName: string
     lookingForAJob: boolean
-    lookingForAJobDescription?: string
+    lookingForAJobDescription: string
     photos: {
         small: string
         large: string
@@ -55,6 +55,7 @@ export type ProfileInfoPropsType = {
     userId: number,
     status: string
 }
+
 
 export type ProfileStateType = ProfileInfoPropsType & {
     postData: Array<PostDataType>,
@@ -75,22 +76,14 @@ export type ProfileContainerType = RouteComponentProps & {
     profilePage: ProfileStateType
     status: string
     userId: number
+    isLoadingDataProfile:boolean
 }
 
-export type ProfilePropsType = {
-    aboutMe: string,
-    contacts: { vk: string, twitter: string }
-    fullName: string
-    lookingForAJob: boolean
-    lookingForAJobDescription?: string
-    photos: {
-        small: string
-        large: string
+export type ProfilePropsType = ProfileInfoPropsType &
+    {
+        updateStatus: (status: string) => void,
+        isLoadingDataProfile?: boolean
     }
-    userId: number,
-    status: string
-    updateStatus: (status: string) => void
-}
 
 
 export type SidebarStateType = {
