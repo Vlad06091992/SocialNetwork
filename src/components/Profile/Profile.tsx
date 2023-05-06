@@ -8,6 +8,8 @@ import {Redirect} from "react-router-dom";
 
 export const Profile = (props: ProfilePropsType) => {
 
+    console.log('render-profile')
+
     return (
         <div className={classes.Profile}>
             <ProfileInfo aboutMe={props.aboutMe}

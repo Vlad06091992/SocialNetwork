@@ -33,7 +33,6 @@ export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootStateType,
 //@ts-ignore
 window.store = store
 
-console.log(store.getState().profilePage.postData)
 
 
 

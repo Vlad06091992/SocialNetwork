@@ -1,11 +1,12 @@
 import React from "react";
 import {RootStateType} from "../../redux/store";
-import {addMessage} from "../../redux/store";
+
 
 import {Dialogs} from "./Dilaogs";
 import {connect} from "react-redux";
 import {WithAuthRedirect} from "../../hoc/WithAuthRedirect";
 import {compose, Dispatch} from "redux";
+import {addMessage} from "../../redux/dialogs-reducer";
 
 
 

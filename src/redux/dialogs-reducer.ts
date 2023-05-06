@@ -20,8 +20,7 @@ let initialState: DialogsStateType = {
 
 export const dialogsReducer = (state: DialogsStateType = initialState, action: ActionsType) => {
     switch (action.type) {
-
-        case ("ADD-MESSAGE"): {
+        case ("dialogs/ADD-MESSAGE"): {
             const getNextId = () => {
                 if (state.dialogMessage.length === 0) return 0
                 return state.dialogMessage[state.dialogMessage.length - 1].id + 1
@@ -33,3 +32,16 @@ export const dialogsReducer = (state: DialogsStateType = initialState, action: A
             return state
     }
 }
+
+
+/* For Dialogs reducer */
+export const addMessage = (text: string) => {
+    return {
+        type: "dialogs/ADD-MESSAGE",
+        text
+    } as const
+}
+
+export type ForDialogsReducerTypes = AddMessageACType
+
+type AddMessageACType = ReturnType<typeof addMessage>

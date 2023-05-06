@@ -1,5 +1,5 @@
 import {ChangeEvent} from "react";
-import {AuthStateType, ForAuthReducerrTypes} from "./auth-reducer";
+import {AuthStateType, ForAuthReducersTypes} from "./auth-reducer";
 import {ForUsersReducerTypes} from "./users-reducer";
 import {RouteComponentProps} from "react-router";
 import {ForProfileReducerType} from "./profile-reducer";
@@ -7,6 +7,7 @@ import {ForSideBarReducerType} from "./sidebar-reducer";
 import {ThunkAction} from "redux-thunk";
 import {AppStateType, ForAppReducerTypes} from "./app-reducer";
 import {FakeType} from "../index";
+import {ForDialogsReducerTypes} from "./dialogs-reducer";
 
 export type DialogDataType = {
     name: string
@@ -131,14 +132,14 @@ export type LocationType = {
 }
 
 
-type ForDialogsReducerTypes = AddMessageACType
+
 
 
 export type ActionsType =
     ForUsersReducerTypes
     | ForDialogsReducerTypes
     | ForProfileReducerType
-    | ForAuthReducerrTypes
+    | ForAuthReducersTypes
     | ForSideBarReducerType
     | ForAppReducerTypes
     | FakeType
@@ -147,14 +148,7 @@ export type ActionsType =
 /* For Dialogs reducer */
 
 
-/* For Dialogs reducer */
-export const addMessage = (text: string) => {
-    return {
-        type: "ADD-MESSAGE",
-        text
-    } as const
-}
-type AddMessageACType = ReturnType<typeof addMessage>
+
 
 
 

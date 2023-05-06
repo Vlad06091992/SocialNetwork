@@ -2,6 +2,7 @@ import {ActionsType, SidebarStateType, UserType} from "./store";
 import { setFetching, } from "./users-reducer";
 import {UsersApi} from "../api/api";
 import {Dispatch} from "redux";
+import {AppDispatch, AppThunk} from "./redux-store";
 
 let initialState: SidebarStateType = {
     friends: []
@@ -24,18 +25,14 @@ export const setFriends = (friends: UserType[]) => {
     } as const
 }
 
-export type GetFriendsType = ReturnType<typeof setFriends>
 
-export type ForSideBarReducerType = GetFriendsType
-
-
-export const getFriends = (pageSize?: number, currentPage: number = 1) => {
-    return (dispatch: Dispatch) => {
-        dispatch(setFetching(true))
-        UsersApi.getFriends(pageSize, currentPage)
-            .then(response => {
-                dispatch(setFriends(response.items))
-            })
-
-    }
+export const getFriends = (pageSize?: number, currentPage: number = 1):AppThunk => async (dispatch: Dispatch) => {
+    dispatch(setFetching(true))
+    let res = await UsersApi.getFriends(pageSize, currentPage)
+    dispatch(setFriends(res.items))
+    dispatch(setFetching(false))
 }
+
+
+export type GetFriendsType = ReturnType<typeof setFriends>
+export type ForSideBarReducerType = GetFriendsType

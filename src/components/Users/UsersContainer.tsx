@@ -4,15 +4,15 @@ import {RootStateType, UserType} from "../../redux/store";
 import {Users} from "./Users";
 
 import {followUser, unFollowUser} from "../../redux/users-reducer";
-import {WithAuthRedirect} from "../../hoc/WithAuthRedirect";
 import {
     followingInProgress,
     getCurrentPage,
     getPageSize,
-    getTotalUserCount, getSelectorUsers,
-    isFetching, getSelectorUsersSuper
+    getSelectorUsersSuper,
+    getTotalUserCount,
+    isFetching
 } from "../../redux/users-selectors";
-import { requestUsers } from "../../redux/profile-reducer";
+import {requestUsers} from "../../redux/profile-reducer";
 
 type UsersApiPropsType = {
     users: UserType[]
@@ -32,8 +32,6 @@ class UsersApiComponent extends React.Component<UsersApiPropsType> {
     constructor(props: UsersApiPropsType) {
         super(props);
     }
-
-
     componentDidMount() {
         this.props.getUsers(this.props.pageSize)
     }

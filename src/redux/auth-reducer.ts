@@ -1,4 +1,4 @@
-import {ActionsType, RootStateType} from "./store";
+import {ActionsType} from "./store";
 import {AuthApi} from "../api/api";
 import {AppDispatch, AppThunk} from "./redux-store";
 import {Dispatch} from "redux";
@@ -22,7 +22,7 @@ let initialState = {
 
 export const authReducer = (state: AuthStateType = initialState, action: ActionsType) => {
     switch (action.type) {
-        case 'AUTH-USER':
+        case 'auth/AUTH-USER':
             return {
                 ...state,
                 email: action.email,
@@ -30,7 +30,7 @@ export const authReducer = (state: AuthStateType = initialState, action: Actions
                 userId: action.id,
                 isAuth: action.isAuth
             }
-        case 'SET-SERVER-ERROR':
+        case 'auth/SET-SERVER-ERROR':
             return {...state, serverError: action.error}
         default:
             return state
@@ -43,7 +43,7 @@ export const authReducer = (state: AuthStateType = initialState, action: Actions
 
 export const setAuthUserData = (id: string | null, login: string | null, email: string | null, isAuth: boolean) => {
     return {
-        type: 'AUTH-USER',
+        type: 'auth/AUTH-USER',
         id,
         login,
         email,
@@ -53,36 +53,34 @@ export const setAuthUserData = (id: string | null, login: string | null, email: 
 
 export const setServerError = (error: string) => {
     return {
-        type: 'SET-SERVER-ERROR',
+        type: 'auth/SET-SERVER-ERROR',
         error
     } as const
 }
 
 
-export const getAuthUserDataTC = () => {
+export const getAuthUserDataTC = ():AppThunk => {
+    return async (dispatch: Dispatch) => {
+        try {
+            let res = await  AuthApi.me()
+            if (res.data.resultCode === 0) {
+                let {id, email, login} = res.data.data
+                dispatch(setAuthUserData(id, login, email, true))
+            }
+        } catch (e:any){
+            throw new Error(e)
+        }
 
-    return (dispatch: Dispatch) => {
-        return  AuthApi.me()
-            .then(res => {
-                if (res.data.resultCode === 0) {
-                    let {id, email, login} = res.data.data
-                    dispatch(setAuthUserData(id, login, email, true))
-                }
-            })
     }
 }
 
 
-
-
-
-
-export const loginTC = (email: string, password: string, remeberMe: boolean): AppThunk => {
+export const loginTC = (email: string, password: string, remeberMe: boolean): AppThunk => { //дипатчим санку в санке
     try {
-        return async dispatch => {
+        return async (dispatch:AppDispatch) => {
             let res = await AuthApi.login(email, password, remeberMe)
             if (res.data.resultCode === 0) {
-                dispatch(getAuthUserDataTC())
+                dispatch(getAuthUserDataTC())  //дипатчим санку здесь
             } else {
                 dispatch(setServerError(res.data.messages[0]))
             }
@@ -92,22 +90,16 @@ export const loginTC = (email: string, password: string, remeberMe: boolean): Ap
     }
 }
 
-
-
-export const logoutTC = () => {
-    return (dispatch: AppDispatch) => {
-        AuthApi.logout()
-            .then(res => {
-                if (res.data.resultCode === 0) {
-                    dispatch(setAuthUserData(null, null, null, false))
-
-                }
-            })
-    }
+export const logoutTC = ():AppThunk => async (dispatch: AppDispatch)=> {
+     let res = await AuthApi.logout()
+        if (res.data.resultCode === 0) {
+            dispatch(setAuthUserData(null, null, null, false))
+        }
 }
 
 
-export type ForAuthReducerrTypes = ForAuthUser | SetServerError
+
+export type ForAuthReducersTypes = ForAuthUser | SetServerError
 
 type ForAuthUser = ReturnType<typeof setAuthUserData>
 type SetServerError = ReturnType<typeof setServerError>

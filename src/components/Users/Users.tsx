@@ -4,6 +4,7 @@ import React from "react";
 import {Preloader} from "../Preloader/Preloader";
 import {User} from "./User";
 import {UsersApi} from "../../api/api";
+import {Paginator} from "../Paginator/Paginator";
 
 type UsersPropsType = {
     totalUserCount: number
@@ -14,16 +15,10 @@ type UsersPropsType = {
     followingInProgress: Array<number>
     followUser:(id:number)=>void
     unFollowUser:(id:number)=>void
-
-
 }
 
 export const Users = (props: UsersPropsType) => {
-    let numberOfPages = Math.ceil(props.totalUserCount / props.pageSize)
-    let pages = []
-    for (let i = 1; i <= numberOfPages; i++) {
-        pages.push(i)
-    }
+
 
     const follow = (id: number) => {
       props.followUser(id)
@@ -39,10 +34,7 @@ export const Users = (props: UsersPropsType) => {
             <div>
                 {/*{props.isFetching && <Preloader/>}*/}
             </div>
-            <div style={{maxWidth: '100%', margin: '10px', marginRight: '30px'}}>
-                {pages.map(el => <span className={el === props.currentPage ? classes.bold : ""} key={el}
-                                       onClick={() => props.onPageChanged(el)}>{el + ' '}</span>)}
-            </div>
+         <Paginator totalUserCount={props.totalUserCount} pageSize={props.pageSize} currentPage={props.currentPage} onPageChanged={props.onPageChanged}/>
 
             {props.users.map((el: UserType, i: number) => {
                 return (

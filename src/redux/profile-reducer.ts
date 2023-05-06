@@ -1,12 +1,10 @@
-import {
-    ActionsType, addMessage,
-    PostDataType,
-    ProfileStateType,
-} from "./store";
+import {ActionsType, PostDataType, ProfileStateType,} from "./store";
 import {ProfileApi, UsersApi} from "../api/api";
 import {setCurrentPage, setFetching, setTotalUserCount, setUsers} from "./users-reducer";
 import {Dispatch} from "redux";
-import {setloadingProfileStatus} from "./app-reducer";
+import {addMessage} from "./dialogs-reducer";
+import {AppDispatch, AppThunk} from "./redux-store";
+import App from "../App";
 
 let initialState: ProfileStateType = {
 
@@ -32,7 +30,7 @@ let initialState: ProfileStateType = {
 export const profileReducer = (state: ProfileStateType = initialState, action: ActionsType) => {
 
     switch (action.type) {
-        case ("ADD-POST"):
+        case ("profile/ADD-POST"):
             const getNextId = () => {
                 if (state.postData.length === 0) return 0
                 return state.postData[state.postData.length - 1].id + 1
@@ -43,23 +41,26 @@ export const profileReducer = (state: ProfileStateType = initialState, action: A
                 likes: 0
             }
             return {...state, newPostText: '', postData: [...state.postData, newPost]}
-        case ("SET-ABOUT-ME"):
-            return {...state, aboutMe: action.text}
-        case ("DELETE-POST"):
+        case ("profile/SET-USER-PROFILE"):
+            return {
+                ...state,
+                aboutMe: action.response.aboutMe ? action.response.aboutMe : '',
+                contacts: {
+                    vk: action.response.contacts.vk ? action.response.contacts.vk : '',
+                    twitter: action.response.contacts.twitter ? action.response.contacts.twitter : ''
+                },
+                userId: action.response.userId,
+                fullName: action.response.fullName,
+                lookingForAJob: action.response.lookingForAJob,
+                lookingForAJobDescription: action.response.lookingForAJobDescription ? action.response.lookingForAJobDescription : '',
+                photos: {
+                    small: action.response.photos.small ? action.response.photos.small : '',
+                    large: action.response.photos.large ? action.response.photos.large : '',
+                },
+            }
+        case ("profile/DELETE-POST"):
             return {...state, postData: state.postData.filter(el => el.id != action.id)}
-        case ("SET-CONTACTS"):
-            return {...state, contacts: {...action.contacts}}
-        case ("SET-FULLNAME"):
-            return {...state, fullName: action.text}
-        case ("SET-LOOKING-FOR-A-JOB"):
-            return {...state, lookingForAJob: action.status}
-        case ("SET-LOOKING-FOR-A-JOB-DESCRIPTION"):
-            return {...state, lookingForAJobDescription: action.text}
-        case ("SET-PHOTOS"):
-            return {...state, photos: {...action.photos}}
-        case ("SET-USER-ID"):
-            return {...state, userId: action.userId}
-        case ("SET-USER-STATUS"):
+        case ("profile/SET-USER-STATUS"):
             return {...state, status: action.status}
         default:
             return state
@@ -67,149 +68,86 @@ export const profileReducer = (state: ProfileStateType = initialState, action: A
 
 }
 
-export const addPost = (text:string) => {
+export const addPost = (text: string) => {
     return {
-        type: "ADD-POST",
+        type: "profile/ADD-POST",
         text
     } as const
 }
 
 
-export const deletePost = (id:number) => {
+export const deletePost = (id: number) => {
     return {
-        type: "DELETE-POST",
+        type: "profile/DELETE-POST",
         id
     } as const
 }
 
-export const setAboutMe = (text: string) => {
+export const setUserProfile = (response: ResponseServerProfileType) => {
     return {
-        type: "SET-ABOUT-ME",
-        text
-    } as const
-}
-export const setContacts = (contacts: { vk: string, twitter: string }) => {
-    return {
-        type: "SET-CONTACTS",
-        contacts
-    } as const
-}
-export const setFullName = (text: string) => {
-    return {
-        type: "SET-FULLNAME",
-        text
-    } as const
-}
-export const setLookingForAJob = (status: boolean) => {
-    return {
-        type: "SET-LOOKING-FOR-A-JOB",
-        status
-    } as const
-}
-export const setLookingForAJobDescription = (text: string) => {
-    return {
-        type: "SET-LOOKING-FOR-A-JOB-DESCRIPTION",
-        text
-    } as const
-}
-export const setPhotos = (photos: { small: string, large: string }) => {
-    return {
-        type: "SET-PHOTOS",
-        photos
-    } as const
-}
-export const setUserId = (userId: number) => {
-    return {
-        type: "SET-USER-ID",
-        userId
+        type: "profile/SET-USER-PROFILE",
+        response
     } as const
 }
 
 export const setUserStatus = (status: string) => {
     return {
-        type: "SET-USER-STATUS",
+        type: "profile/SET-USER-STATUS",
         status
     } as const
 }
 
+export const requestUsers = (pageSize?: number, currentPage: number = 1):AppThunk => async (dispatch: AppDispatch) => {
+    dispatch(setFetching(true))
+    let res = await UsersApi.getUsers(pageSize, currentPage)
+    dispatch(setFetching(false))
+    dispatch(setUsers(res.items))
+    dispatch(setTotalUserCount(res.totalCount))
+    dispatch(setCurrentPage(currentPage))
+}
+
+export const getUserProfile = (userId: number):AppThunk => async (dispatch: Dispatch) => {
+        dispatch({type: 'profile/SET-LOADING-PROFILE-STATUS', status: false})
+        let res = await ProfileApi.getUserProfile(userId)
+        dispatch(setUserProfile(res))
+        dispatch({type: 'profile/SET-LOADING-PROFILE-STATUS', status: true})
+    }
+
+export const getUserStatus = (userId: number):AppThunk =>  async (dispatch: AppDispatch) => {
+    let res = await ProfileApi.getUserStatus(userId)
+        dispatch(setUserStatus(res))
+}
+
+export const updateStatus = (status: string):AppThunk =>  async (dispatch: AppDispatch) => {
+      let res = await  ProfileApi.updateStatus(status)
+            if (res.data.resultCode === 0) {
+                dispatch(setUserStatus(status))
+            }
+}
+
+
+type nullString = null | string
+
+type ResponseServerProfileType = {
+    aboutMe: nullString
+    contacts: { facebook: nullString, github: nullString, instagram: nullString, mainLink: nullString, twitter: nullString, vk: nullString, website: nullString, youtube: nullString }
+    fullName: string
+    lookingForAJob: boolean
+    lookingForAJobDescription: nullString
+    photos: { small: nullString, large: nullString }
+    userId: 27091
+}
 
 type AddPostActionType = ReturnType<typeof addPost>
 type DeletePostActionType = ReturnType<typeof deletePost>
 type AddMessageActionType = ReturnType<typeof addMessage>
-type SetAboutMeAC = ReturnType<typeof setAboutMe>
-type SetContactsAC = ReturnType<typeof setContacts>
-type SetFullNameAC = ReturnType<typeof setFullName>
-type SetLookingForAJobACDescription = ReturnType<typeof setLookingForAJobDescription>
-type SetLookingForAJobAC = ReturnType<typeof setLookingForAJob>
-type SetPhotosAC = ReturnType<typeof setPhotos>
-type SetUserId = ReturnType<typeof setUserId>
+type SetUserProfile = ReturnType<typeof setUserProfile>
 type SetUserStatus = ReturnType<typeof setUserStatus>
-
 
 
 export type ForProfileReducerType =
     AddPostActionType
     | AddMessageActionType
-    | SetAboutMeAC
-    | SetContactsAC
-    | SetFullNameAC
-    | SetLookingForAJobAC
-    | SetLookingForAJobACDescription
-    | SetPhotosAC
-    | SetUserId
+    | SetUserProfile
     | SetUserStatus
-| DeletePostActionType
-
-
-
-export const requestUsers = (pageSize?: number, currentPage: number = 1) => {
-    return (dispatch: Dispatch) => {
-        dispatch(setFetching(true))
-        UsersApi.getUsers(pageSize, currentPage)
-            .then(response => {
-                dispatch(setFetching(false))
-                dispatch(setUsers(response.items))
-                dispatch(setTotalUserCount(response.totalCount))
-                dispatch(setCurrentPage(currentPage))
-            })
-
-    }
-}
-
-export const getUserProfile = (userId: number) => {
-    return (dispatch: Dispatch) => {
-        dispatch({ type: 'SET-LOADING-PROFILE-STATUS', status: false })
-        ProfileApi.getUserProfile(userId)
-            .then(response => {
-                dispatch(setAboutMe(response.aboutMe))
-                dispatch(setContacts(response.contacts))
-                dispatch(setUserId(response.aboutMe))
-                dispatch(setFullName(response.fullName))
-                dispatch(setLookingForAJob(response.lookingForAJob))
-                dispatch(setLookingForAJobDescription(response.lookingForAJobDescription))
-                dispatch(setPhotos(response.photos))
-                dispatch(setUserId(response.userId))
-            })
-        dispatch({ type: 'SET-LOADING-PROFILE-STATUS', status: true })
-    }
-}
-
-export const getUserStatus = (userId: number) => {
-    return (dispatch: Dispatch) => {
-        ProfileApi.getUserStatus(userId)
-            .then(response => {
-                dispatch(setUserStatus(response))
-            })
-    }
-}
-
-export const updateStatus = (status: string) => {
-    return (dispatch: Dispatch) => {
-        ProfileApi.updateStatus(status).then(r => {
-            if (r.data.resultCode === 0) {
-                dispatch(setUserStatus(status))
-
-            }
-
-        })
-    }}
+    | DeletePostActionType

@@ -1,6 +1,7 @@
 import {ActionsType, UsersStateType, UserType} from "./store";
 import {UsersApi} from "../api/api";
 import {Dispatch} from "redux";
+import {AxiosResponse} from "axios";
 
 let initialState = {
     users: [],
@@ -13,25 +14,18 @@ let initialState = {
 }
 export const userReducer = (state: UsersStateType = initialState, action: ActionsType): UsersStateType => {
     switch (action.type) {
-        case("FAKE"): {
-            return {...state, fake : state.fake + 1}
-
-        }
         case("FOLLOW-USER"): {
             return {...state, users: state.users.map(el => el.id === action.UserId ? {...el, followed: true} : el)}
-
         }
         case ("UNFOLLOW-USER"): {
             return {...state, users: state.users.map(el => el.id === action.UserId ? {...el, followed: false} : el)}
         }
-
         case ("SET-USERS"): {
             return {...state, users: [...action.users]}
         }
         case ("SET-TOTAL-COUNT"): {
             return {...state, totalUserCount: (action.totalUserCount)}
         }
-
         case ("SET-CURRENT-PAGE"): {
             return {...state, currentPage: (action.currentPage)}
         }
@@ -121,31 +115,26 @@ export type ForUsersReducerTypes =
     | SetFollowingProgress
     | RemoveFollowingProgress
 
+let followUnFiollowFlow = (id:number,dispatch:Dispatch,action:(id:number)=>ReturnType<typeof follow>|ReturnType<typeof unFollow>,api:(id:number)=>Promise<any>) => {
+    dispatch(setFollowingProgress(id))
+    api(id)
+        .then((data: { resultCode: number; }) => {
+            if (data.resultCode == 0) {
+                dispatch(action(id))
+            }
+            dispatch(removeFollowingProgress(id))
+        })
+}
 
 export const followUser = (id: number) => {
     return (dispatch: Dispatch) => {
-        dispatch(setFollowingProgress(id))
-        UsersApi.followUser(id)
-            .then(data => {
-                if (data.resultCode == 0) {
-                    dispatch(follow(id))
-                }
-                dispatch(removeFollowingProgress(id))
-            })
-
+        followUnFiollowFlow(id,dispatch,follow,UsersApi.followUser)
     }
 }
 
 export const unFollowUser = (id: number) => {
     return (dispatch: Dispatch) => {
-        dispatch(setFollowingProgress(id))
-        UsersApi.unFollowUser(id)
-            .then(data => {
-                if (data.resultCode == 0) {
-                    dispatch(unFollow(id))
-                }
-                dispatch(removeFollowingProgress(id))
-            })
-
+        followUnFiollowFlow(id,dispatch,unFollow,UsersApi.unFollowUser)
     }
 }
+
