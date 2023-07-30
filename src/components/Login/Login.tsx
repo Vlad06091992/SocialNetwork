@@ -11,21 +11,21 @@ type FormValues = {
     login: string;
     password: string;
     rememberMe: boolean;
+    captcha?:string
 };
 
 type LoginFormType = {
     auth:AuthStateType,
-    login:( login: string, password: string,rememberMe: boolean)=>void
+    login:( login: string, password: string,rememberMe: boolean,captcha?:string)=>void
 }
 
  function LoginForm(props:LoginFormType) {
-     const { register, handleSubmit, formState:{errors},reset } = useForm<FormValues>();
 
+    console.log(props)
 
-
-     const onSubmit: SubmitHandler<FormValues> = ({login,password,rememberMe}) => {
-        props.login(login,password,rememberMe)
-
+     const { register, handleSubmit, formState:{errors} } = useForm<FormValues>();
+     const onSubmit: SubmitHandler<FormValues> = ({login,password,rememberMe,captcha}) => {
+         props.login(login,password,rememberMe,captcha)
      };
 
      if(props.auth.isAuth){
@@ -42,12 +42,24 @@ type LoginFormType = {
             <div>
             <input type="password" className={errors.password ? css.error : css.item} {...register("password",{required:true} )} />
                 {errors.password && <p>This is required.</p>}
+
+
+
+
             </div>
             <input type="checkbox" {...register("rememberMe")} /> <span>remember me</span>
 <div>
-            <input type="submit" disabled={!!errors.login || !!errors.password} />
+
     {props.auth.serverError}
+    { props.auth.captchaUrl && <div>
+    { <img src={props.auth.captchaUrl}/> }
+
+        { props.auth.captchaUrl &&<div> <input type="text" className={errors.password ? css.error : css.item} {...register("captcha",{required:true} )} /></div>}
+    {errors.password && <p>This is required.</p>}
+</div>}
+
         </div>
+            <input type="submit" disabled={!!errors.login || !!errors.password} />
         </form>
     );
 }

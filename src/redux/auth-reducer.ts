@@ -1,5 +1,5 @@
 import {ActionsType} from "./store";
-import {AuthApi} from "../api/api";
+import {AuthApi, securityApi} from "../api/api";
 import {AppDispatch, AppThunk} from "./redux-store";
 import {Dispatch} from "redux";
 
@@ -9,7 +9,8 @@ export type AuthStateType = {
     email: null | string
     login: null | string
     isAuth: null | boolean,
-    serverError: null | string
+    serverError: null | string,
+    captchaUrl: null | string
 }
 
 let initialState = {
@@ -17,7 +18,8 @@ let initialState = {
     email: null,
     login: null,
     isAuth: false,
-    serverError: null
+    serverError: null,
+    captchaUrl: null
 }
 
 export const authReducer = (state: AuthStateType = initialState, action: ActionsType) => {
@@ -28,10 +30,14 @@ export const authReducer = (state: AuthStateType = initialState, action: Actions
                 email: action.email,
                 login: action.login,
                 userId: action.id,
-                isAuth: action.isAuth
+                isAuth: action.isAuth,
+                captchaUrl: action.captchaUrl,
+
             }
         case 'auth/SET-SERVER-ERROR':
             return {...state, serverError: action.error}
+        case 'auth/SET-CAPTCHA':
+            return {...state, captchaUrl: action.captchaURL}
         default:
             return state
     }
@@ -41,13 +47,14 @@ export const authReducer = (state: AuthStateType = initialState, action: Actions
 //For auth reducer
 
 
-export const setAuthUserData = (id: string | null, login: string | null, email: string | null, isAuth: boolean) => {
+export const setAuthUserData = (id: string | null, login: string | null, email: string | null, isAuth: boolean, captchaUrl?:string | null) => {
     return {
         type: 'auth/AUTH-USER',
         id,
         login,
         email,
-        isAuth
+        isAuth,
+        captchaUrl
     } as const
 }
 
@@ -55,6 +62,13 @@ export const setServerError = (error: string) => {
     return {
         type: 'auth/SET-SERVER-ERROR',
         error
+    } as const
+}
+
+export const getCaptchaUrlSuccess = (url: string) => {
+    return {
+        type: 'auth/SET-CAPTCHA',
+        captchaURL: url
     } as const
 }
 
@@ -75,13 +89,21 @@ export const getAuthUserDataTC = ():AppThunk => {
 }
 
 
-export const loginTC = (email: string, password: string, remeberMe: boolean): AppThunk => { //дипатчим санку в санке
+export const loginTC = (email: string, password: string, remeberMe: boolean,captcha?:string): AppThunk => { //дипатчим санку в санке
     try {
         return async (dispatch:AppDispatch) => {
-            let res = await AuthApi.login(email, password, remeberMe)
+            let res = await AuthApi.login(email, password, remeberMe,captcha)
             if (res.data.resultCode === 0) {
                 dispatch(getAuthUserDataTC())  //дипатчим санку здесь
-            } else {
+            }
+
+            else if(res.data.resultCode === 10) {
+                debugger
+                dispatch(setServerError(res.data.messages[0]))
+                dispatch(getCaptchaTC())
+            }
+
+            else {
                 dispatch(setServerError(res.data.messages[0]))
             }
         }
@@ -93,13 +115,20 @@ export const loginTC = (email: string, password: string, remeberMe: boolean): Ap
 export const logoutTC = ():AppThunk => async (dispatch: AppDispatch)=> {
      let res = await AuthApi.logout()
         if (res.data.resultCode === 0) {
-            dispatch(setAuthUserData(null, null, null, false))
+            dispatch(setAuthUserData(null, null, null, false, null))
         }
 }
 
+export const getCaptchaTC = ():AppThunk => async (dispatch: AppDispatch)=> {
+    let res = await securityApi.getCaptchaUrl()
+    debugger
+    dispatch(getCaptchaUrlSuccess(res.data.url))
+   return
+}
 
 
-export type ForAuthReducersTypes = ForAuthUser | SetServerError
+export type ForAuthReducersTypes = ForAuthUser | SetServerError | SetCaptchaAC
 
 type ForAuthUser = ReturnType<typeof setAuthUserData>
 type SetServerError = ReturnType<typeof setServerError>
+type SetCaptchaAC = ReturnType<typeof getCaptchaUrlSuccess>
